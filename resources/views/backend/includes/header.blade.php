@@ -89,7 +89,6 @@
                                 <small>{{ trans('strings.backend.general.member_since') }} {{ access()->user()->created_at->format("m/d/Y") }}</small>
                             </p>
                         </li>
-                        <?php /*
                         <li class="user-body">
                             <div class="col-xs-12 text-center">
                                 {{ link_to_route("admin.profile.edit", 'Edit Profile') }}
@@ -103,7 +102,6 @@
                                 {{ link_to_route('dashboard', 'Link') }}
                             </div> --}}
                         </li>
-                        */ ?>
                         <li class="user-footer">
                             <div class="pull-left">
                                 <a href="{!! route('frontend.index') !!}" class="btn btn-default btn-flat">
