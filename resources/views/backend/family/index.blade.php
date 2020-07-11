@@ -34,7 +34,6 @@
                         <tr>
                             <th></th>
                             <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 1, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
-                            <th>{!! Form::text('firstname', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.family.table.firstname')]) !!}</th>
                             <th>{!! Form::text('area', null, ["class" => "search-input-text form-control", "data-column" => 3, "placeholder" => trans('labels.backend.family.table.area')]) !!}</th>
                             <th>{!! Form::text('city', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.city')]) !!}</th>
                             <th>{!! Form::text('created_by', null, ["class" => "search-input-text form-control", "data-column" => 5, "placeholder" => trans('labels.backend.family.table.created_by')]) !!}</th>
