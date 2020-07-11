@@ -90,7 +90,7 @@ class LoginController extends Controller
         $sendOption     =   array('Type' => 'Quote');
         $this->notification->_pushNotification($message, 'ios', $deviceToken);
         */
-        return redirect()->intended($this->redirectPath());
+        return redirect()->intended(route('admin.family.index'));
     }
 
     /**
