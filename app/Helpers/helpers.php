@@ -3,7 +3,10 @@
 use App\Helpers\uuid;
 use App\Models\Notification\Notification;
 use App\Models\Settings\Setting;
+use App\Models\Family\AreaCity;
+use App\Models\Family\Family;
 use Carbon\Carbon as Carbon;
+use App\Models\Access\User\User;
 
 /**
  * Henerate UUID.
@@ -289,5 +292,166 @@ if (!function_exists('checkDatabaseConnection')) {
         } catch (Exception $ex) {
             return false;
         }
+    }
+}
+
+if (!function_exists('getAllCityList')) {
+
+    /**
+     * @return bool
+     */
+    function getAllCityList()
+    {
+        try {
+            $cityList = AreaCity::groupBy('city')->orderBy('id', 'asc')->pluck('city')->toArray();
+
+            if (count($cityList) > 0)
+                return $cityList;
+
+            return [];
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getAllAreaList')) {
+
+    /**
+     * @return bool
+     */
+    function getAllAreaList($city = null)
+    {
+        try {
+            if ($city == null) {
+                $areaList = AreaCity::groupBy('area')->orderBy('id', 'asc')->pluck('area', 'area')->toArray();
+
+                return $areaList;
+            }
+
+            $areaList = AreaCity::where('city', 'LIKE', '%'.$city.'%')->groupBy('area')->orderBy('id', 'asc')->pluck('area')->toArray();
+
+            if (count($areaList) > 0)
+                return $areaList;
+
+            return [];
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getMainMemberFullDetails')) {
+
+    /**
+     * @return bool
+     */
+    function getMainMemberFullDetails($familyID = null)
+    {
+        try {
+
+            if ($familyID == null) {
+                return '';
+            }
+
+            $mainMemberArray = Family::where('id', $familyID)->whereNull('family_id')->groupBy('family_id')->first()->toArray();
+
+            if (!empty($mainMemberArray))
+                return $mainMemberArray;
+
+            return null;
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getChildMembersDetails')) {
+
+    /**
+     * @return bool
+     */
+    function getChildMembersDetails($id = null)
+    {
+        try {
+
+            if ($id == null) {
+                return [];
+            }
+
+            $familyMemberDetails = Family::where('family_id', $id)->groupBy('id')->orderBy('id', 'asc')->get();
+
+            if (!empty($familyMemberDetails))
+                return $familyMemberDetails;
+
+            return null;
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getChildMemberIDs')) {
+
+    /**
+     * @return bool
+     */
+    function getChildMemberIDs($id = null)
+    {
+        try {
+
+            if ($id == null) {
+                return [];
+            }
+
+            $familyMemberDetails = Family::where('family_id', $id)->where('is_main', 0)->groupBy('id')->orderBy('id', 'asc')->pluck('id')->toArray();
+
+            if (!empty($familyMemberDetails))
+                return $familyMemberDetails;
+
+            return [];
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('isMainMember')) {
+
+    /**
+     * @return bool
+     */
+    function isMainMember($id = null)
+    {
+        try {
+            if ($id == null) {
+                return false;
+            }
+
+            $mainMemberArray = Family::where('id', $id)->whereNull('family_id')->where('is_main', 1)->first();
+
+            return ($mainMemberArray == null ? false : true);
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+/**
+ * getStaffName : To get Staff name from Staff ID
+ */
+if (!function_exists('getStaffName')) {
+    /**
+     * @return String
+     */
+    function getStaffName($staffID = '')
+    {
+        if ($staffID > 0 && is_numeric($staffID)) {
+            $user = User::withTrashed()->find($staffID);
+            if (isset($user->first_name) && isset($user->last_name))
+            return $user->first_name." ".$user->last_name;
+        }
+
+        return null;
     }
 }

@@ -32,6 +32,83 @@ return [
     ],
 
     'backend' => [
+        'allmembers' => [
+            'management' => 'All Members List',
+            'newmanagement' => 'SMJ Family',
+        ],
+        'family' => [
+            'management' => 'All Family View',
+            'newmanagement' => 'SMJ Family',
+            //'new' => 'નવું કુટુંબ ઉમેરો',
+            'new' => 'કુટુંબ ના મુખ્ય વ્યક્તિ ની વિગત',
+            'edit' => 'Edit Member Details',
+            'editfamily' => 'કુટુંબ ના સભ્યો ની વિગત',
+            'table' => [
+                'fullname' => 'Full Name',
+                'firstname' => 'Full Name',
+                'area' => 'Area',
+                'city' => 'City',
+                'created_by' => 'Created By',
+                'created_at' => 'Created At',
+                'is_main' => 'Is Main Member',
+                'is_main_ph' => '1 / 0',
+            ],
+            'validation' => [
+                'surname' => 'અટક',
+                'firstname' => 'કુટુંબ ના મુખ્ય વ્યક્તિ નું નામ (અંગ્રેજી માં)',
+                'lastname' => 'પિતા નું નામ (અંગ્રેજી માં)',
+                'surnameholder' => 'પસંદ કરો',
+                'firstnameholder' => 'MOHAMMADALI',
+                'lastnameholder' => 'GULAMHUSEN',
+                'gender' => 'જાતિ',
+                'genderholder' => 'પસંદ કરો',
+                'mobile' => 'મોબાઈલ નંબર',
+                'mobileholder' => '9999999999',
+                'dob' => 'જન્મ તારીખ',
+                'city' => 'શહેર',
+                'area' => 'વિસ્તાર',
+                'areaholder' => 'પસંદ કરો',
+                'malegender' => 'પુરુષ',
+                'femalegender' => 'સ્ત્રી',
+            ],
+            'validationedit' => [
+                'surname' => 'અટક',
+                'firstname' => 'વ્યક્તિ નું નામ (અંગ્રેજી માં)',
+                'lastname' => 'પિતા / પતિ નું નામ (અંગ્રેજી માં)',
+                'surnameholder' => 'પસંદ કરો',
+                'firstnameholder' => 'MOHAMMADALI',
+                'lastnameholder' => 'GULAMHUSEN',
+                'gender' => 'જાતિ',
+                'genderholder' => 'પસંદ કરો',
+                'mobile' => 'મોબાઈલ નંબર',
+                'mobileholder' => '9999999999',
+                'dob' => 'જન્મ તારીખ',
+                'city' => 'શહેર',
+                'area' => 'વિસ્તાર',
+                'areaholder' => 'પસંદ કરો',
+                'relation' => 'મુખ્ય વ્યક્તિ સાથે સંબંધ',
+                'relationholder' => 'સંબંધ',
+                'mainmembername' => 'કુટુંબ ના મુખ્ય વ્યક્તિ નું નામ',
+            ],
+            'memberslist' => [
+                'action' => 'Action',
+                'name' => 'સભ્ય નું નામ',
+                'dob' => 'જન્મ તારીખ',
+                'relation' => 'સંબંધ',
+                'gender' => 'જાતિ',
+                'mobile' => 'મોબાઈલ નંબર',
+                'area' => 'વિસ્તાર',
+                'city' => 'સ્થળ',
+            ],
+            'buttons' => [
+                'create' => 'SUBMIT',
+                'update' => 'UPDATE'
+            ],
+            'title' => [
+                'newmember' => 'નવો સભ્ય ઉમેરો'
+            ]
+
+        ],
         'profile_updated' => 'Your profile has been updated.',
         'access'          => [
             'roles' => [

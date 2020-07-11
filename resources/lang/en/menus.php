@@ -14,6 +14,10 @@ return [
     */
 
     'backend' => [
+        'family' => [
+            'all' => 'All Family View',
+            'create' => 'Add New Family'
+        ],
         'access' => [
             'title'  => 'Access Management',
             'export' => 'Export',

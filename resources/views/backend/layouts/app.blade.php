@@ -78,6 +78,10 @@
         @yield('before-scripts')
         {{ Html::script(mix('js/backend.js')) }}
         {{ Html::script(mix('js/backend-custom.js')) }}
+        {{ Html::script('js/jquerysession.min.js') }}
         @yield('after-scripts')
+        {!! Html::script('js/jquery.date-dropdowns.js') !!}
+        @yield('extra-scripts')
+        {!! Html::script('smj/js/front-user.js') !!}
     </body>
 </html>

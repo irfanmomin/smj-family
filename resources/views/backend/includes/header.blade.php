@@ -26,7 +26,7 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-
+<?php /*
                 @if (config('locale.status') && count(config('locale.languages')) > 1)
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -73,7 +73,7 @@
                         </li>
                     </ul>
                 </li><!-- /.tasks-menu -->
-
+            */ ?>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="{{ access()->user()->picture }}" class="user-image" alt="User Avatar"/>
@@ -89,7 +89,7 @@
                                 <small>{{ trans('strings.backend.general.member_since') }} {{ access()->user()->created_at->format("m/d/Y") }}</small>
                             </p>
                         </li>
-
+                        <?php /*
                         <li class="user-body">
                             <div class="col-xs-12 text-center">
                                 {{ link_to_route("admin.profile.edit", 'Edit Profile') }}
@@ -103,7 +103,7 @@
                                 {{ link_to_route('dashboard', 'Link') }}
                             </div> --}}
                         </li>
-
+                        */ ?>
                         <li class="user-footer">
                             <div class="pull-left">
                                 <a href="{!! route('frontend.index') !!}" class="btn btn-default btn-flat">

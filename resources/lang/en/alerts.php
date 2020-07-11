@@ -14,6 +14,14 @@ return [
     */
 
     'backend' => [
+        'family' => [
+            'updated' => 'Member was updated Successfully!',
+            'wrong' => 'Something went wrong!',
+            'wrongid' => 'Invalid Family. Please try again!',
+            'inserted' => 'Member added Successfully!',
+            'deleted' => 'Family has been Deleted Successfully',
+            'deletedmember' => 'Member has been Deleted Successfully',
+        ],
         'roles' => [
             'created' => 'The role was successfully created.',
             'deleted' => 'The role was successfully deleted.',

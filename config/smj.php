@@ -1,0 +1,60 @@
+<?php
+
+return [
+    'tables' => [
+        'family'  => 'members',
+        'areacity' => 'area_city',
+    ],
+    'surname' => [
+        /* 'SHETHWALA' => 'શેઠવાલા',
+        'GHODAWALA' => 'ઘોડાવાળા',
+        'BATLIWALA' => 'બાટલીવાળા', */
+        'SHETHWALA' => 'SHETHWALA',
+        'GHODAWALA' => 'GHODAWALA',
+        'BATLIWALA' => 'BATLIWALA',
+        'BARHAZAR' => 'BARHAZAR',
+        'ZABUK' => 'ZABUK',
+        'KOLSAWALA' => 'KOLSAWALA',
+    ],
+    'gender' => [
+        'M' => 'પુરુષ',
+        'F' => 'સ્ત્રી',
+    ],
+    'relation_field' => [
+        'Father' => 'Father / પિતા',
+        'Mother' => 'Mother / માતા',
+        'Son' => 'Son / પુત્ર',
+        'Daughter' => 'Daughter / પુત્રી',
+        'Wife' => 'Wife / વહુ',
+        'Brother' => 'Brother / ભાઈ',
+        'Sister' => 'Sister / બહેન',
+        'Uncle' => 'Uncle / કાકા',
+        'Aunty' => 'Aunty / કાકી',
+        'Nephew' => 'Nephew / ભત્રીજો / ભત્રીજી',
+        'Grand father' => 'Grand father / દાદા',
+        'Grand mother' => 'Grand mother / દાદી',
+        'Daughter in law' => 'Daughter in law / પુત્ર ની વહુ',
+        'Sister in law' => 'Sister in law / ભાભી',
+        'Cousin' => 'Cousin / કાકા નો છોકરો - છોકરી',
+        'Husband' => 'Husband / પતિ',
+    ],
+    'relation_label' => [
+        'Self' => 'પોતે',
+        'Father' => 'પિતા',
+        'Mother' => 'માતા',
+        'Son' => 'પુત્ર',
+        'Daughter' => 'પુત્રી',
+        'Wife' => 'વહુ',
+        'Brother' => 'ભાઈ',
+        'Sister' => 'બહેન',
+        'Uncle' => 'કાકા',
+        'Aunty' => 'કાકી',
+        'Nephew' => 'ભત્રીજો / ભત્રીજી',
+        'Grand father' => 'દાદા',
+        'Grand mother' => 'દાદી',
+        'Daughter in law' => 'પુત્ર ની વહુ',
+        'Sister in law' => 'ભાભી',
+        'Cousin' => 'કાકા નો છોકરો - છોકરી',
+        'Husband' => 'પતિ',
+    ]
+];

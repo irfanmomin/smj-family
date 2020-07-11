@@ -51,6 +51,7 @@ mix.sass('resources/assets/sass/frontend/app.scss', 'public/css/frontend.css')
     //Datatable js
     .scripts([
         'node_modules/datatables.net/js/jquery.dataTables.js',
+        'public/js/datatable-responsive.js',
         'public/js/plugin/datatables/dataTables.bootstrap.min.js',
         'node_modules/datatables.net-buttons/js/dataTables.buttons.js',
         'node_modules/datatables.net-buttons/js/buttons.flash.js',
