@@ -43,6 +43,7 @@ class FamilyRepository extends BaseRepository
             ->leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.family").'.created_by')
             ->select([
                 DB::raw('CONCAT('.config("smj.tables.family").'.firstname, " ", '.config("smj.tables.family").'.lastname, " ", '.config("smj.tables.family").'.surname) AS fullname'),
+                DB::raw('CONCAT('.config("smj.tables.family").'.area, " / ", '.config("smj.tables.family").'.city) AS areacity'),
                 DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
                 config('smj.tables.family').'.id',
                 config('smj.tables.family').'.family_id',
@@ -71,6 +72,7 @@ class FamilyRepository extends BaseRepository
             ->leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.family").'.created_by')
             ->select([
                 DB::raw('CONCAT('.config("smj.tables.family").'.firstname, " ", '.config("smj.tables.family").'.lastname, " ", '.config("smj.tables.family").'.surname) AS fullname'),
+                DB::raw('CONCAT('.config("smj.tables.family").'.area, " / ", '.config("smj.tables.family").'.city) AS areacity'),
                 DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
                 config('smj.tables.family').'.id',
                 config('smj.tables.family').'.family_id',

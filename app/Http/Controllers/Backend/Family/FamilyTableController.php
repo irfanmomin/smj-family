@@ -34,6 +34,9 @@ class FamilyTableController extends Controller
             ->filterColumn('fullname', function($query, $keyword) {
                 $query->whereRaw("firstname like ?", ["%$keyword%"])->orWhereRaw("lastname like ?", ["%$keyword%"])->orWhereRaw("surname like ?", ["%$keyword%"]);
             })
+            ->filterColumn('areacity', function($query, $keyword) {
+                $query->whereRaw("area like ?", ["%$keyword%"])->orWhereRaw("city like ?", ["%$keyword%"]);
+            })
             ->addColumn('fullname', function ($family) {
                 $childIDs = getChildMemberIDs($family->id);
                 $totalMembers = 1;
@@ -43,6 +46,9 @@ class FamilyTableController extends Controller
 
                 return $family->fullname.' ('.$totalMembers.')';
             })
+            /* ->addColumn('areacity', function ($family) {
+                return $family->area.' / '.$family->city;
+            }) */
             ->filterColumn('creatorName', function($query, $keyword) {
                 $query->whereRaw("CONCAT(users.first_name, ' ', users.last_name) like ?", ["%{$keyword}%"]);
             })

@@ -21,22 +21,17 @@
                 <table id="family-table" class="table table-condensed table-hover table-bordered responsive">
                     <thead>
                         <tr>
-                            <th>{{ trans('labels.general.actions') }}</th>
                             <th>{{ trans('labels.backend.family.table.fullname') }}</th>
                             <th>{{ trans('labels.backend.family.table.firstname') }}</th>
+                            <th>{{ trans('labels.backend.family.table.areacity') }}</th>
                             <th>{{ trans('labels.backend.family.table.area') }}</th>
-                            <th>{{ trans('labels.backend.family.table.city') }}</th>
-                            <th>{{ trans('labels.backend.family.table.created_by') }}</th>
-                            <th>{{ trans('labels.backend.family.table.created_at') }}</th>
+                            <th>{{ trans('labels.general.actions') }}</th>
                         </tr>
                     </thead>
                     <thead class="transparent-bg">
                         <tr>
-                            <th></th>
-                            <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 1, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
-                            <th>{!! Form::text('area', null, ["class" => "search-input-text form-control", "data-column" => 3, "placeholder" => trans('labels.backend.family.table.area')]) !!}</th>
-                            <th>{!! Form::text('city', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.city')]) !!}</th>
-                            <th>{!! Form::text('created_by', null, ["class" => "search-input-text form-control", "data-column" => 5, "placeholder" => trans('labels.backend.family.table.created_by')]) !!}</th>
+                            <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
+                            <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.family.table.areacity')]) !!}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -62,21 +57,25 @@
                     type: 'post'
                 },
                 columns: [
-                    {data: 'actions', name: 'actions', searchable: false, sortable: false},
                     {data: 'fullname', name: 'fullname'},
                     {data: 'firstname', name: 'firstname', sortable: true},
+                    {data: 'areacity', name: 'areacity'},
                     {data: 'area', name: '{{config('smj.tables.family')}}.area'},
-                    {data: 'city', name: '{{config('smj.tables.family')}}.city'},
-                    {data: 'creatorName', name: 'creatorName'},
-                    {data: 'created_at', name: '{{config('smj.tables.family')}}.created_at'},
+                    {data: 'actions', name: 'actions', searchable: false, sortable: false},
                 ],
-                order: [[6, "desc"]],
+                order: [[1, "asc"]],
                 searchDelay: 500,
                 columnDefs: [
-                    { width: 75, targets: 0 },
-                    { 'orderData':[2], 'targets': [1] },
+                    { width: 280, targets: 0 },
+                    { 'orderData':[1], 'targets': [0] },
                     {
-                        'targets': [2],
+                        'targets': [1],
+                        'visible': false,
+                        'searchable': false
+                    },
+                    { 'orderData':[3], 'targets': [2] },
+                    {
+                        'targets': [3],
                         'visible': false,
                         'searchable': false
                     },
@@ -85,11 +84,11 @@
                 dom: 'lBfrtip',
                 buttons: {
                     buttons: [
-                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 1, 2, 3]  }},
-                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 1, 2, 3 ]  }},
-                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 1, 2, 3 ]  }},
-                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 1, 2, 3 ]  }},
-                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 1, 2, 3 ]  }}
+                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 0, 2]  }},
+                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 0, 2 ]  }},
+                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 0, 2 ]  }},
+                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 0, 2 ]  }},
+                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 0, 2 ]  }}
                     ]
                 }
             });

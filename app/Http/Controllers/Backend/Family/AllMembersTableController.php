@@ -34,6 +34,9 @@ class AllMembersTableController extends Controller
             ->filterColumn('fullname', function($query, $keyword) {
                 $query->whereRaw("firstname like ?", ["%$keyword%"])->orWhereRaw("lastname like ?", ["%$keyword%"])->orWhereRaw("surname like ?", ["%$keyword%"]);
             })
+            ->filterColumn('areacity', function($query, $keyword) {
+                $query->whereRaw("area like ?", ["%$keyword%"])->orWhereRaw("city like ?", ["%$keyword%"]);
+            })
             ->addColumn('fullname', function ($family) {
                 return $family->fullname;
             })
@@ -47,7 +50,7 @@ class AllMembersTableController extends Controller
                 if ($family->is_main == 1) {
                     return '<span class="label label-success">YES</span>';
                 } else if ($family->is_main == '0') {
-                    return '<span class="label label-default">NO</span>';
+                    return '';
                 } else {
                     return '-';
                 }

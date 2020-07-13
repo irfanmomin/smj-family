@@ -44,7 +44,16 @@
                                     <td><a href="{{ route('admin.family.edit', $mainMemberArray['id']) }}"><img width="18" src="{{url('/')}}/img/edit.png" />&nbsp;<a href="{{ route('admin.family.deletefullfamily', $mainMemberArray['id']) }}" onclick="return confirm('Are you sure, You want to delete FULL Family?')" data-method="delete" ><img width="18" src="{{url('/')}}/img/delete.png" /></a></a></td>
                                     <td>1</td>
                                     <td>{{ $mainMemberArray['firstname'].' '.$mainMemberArray['lastname'] }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($mainMemberArray['dob'])) }}</td>
+                                    <td>
+                                        @php
+                                            $now = date('Y-m-d');
+                                            $dob = new DateTime($mainMemberArray['dob']);
+                                            $now = new DateTime($now);
+                                            $interval = $now->diff($dob);
+                                        @endphp
+                                        {{ date('d M Y', strtotime($mainMemberArray['dob'])).' ('.$interval->format('%yY %mM').')' }}
+
+                                    </td>
                                     <td>{{ config('smj.relation_label.'.$mainMemberArray['relation']) }}</td>
                                     <td>{{ ($mainMemberArray['gender'] == 'M' ? 'પુરુષ' : 'સ્ત્રી') }}</td>
                                     <td>{{ $mainMemberArray['mobile'] }}</td>
@@ -64,7 +73,16 @@
                                                 </a></td>
                                             <td>{{ $count }}</td>
                                             <td>{{ $member->firstname.' '.$member->lastname }}</td>
-                                            <td>{{ date('d/m/Y', strtotime($member->dob)) }}</td>
+                                            <td>
+                                                @php
+                                                    $now = date('Y-m-d');
+                                                    $dob = new DateTime($member->dob);
+                                                    $now = new DateTime($now);
+                                                    $interval = $now->diff($dob);
+                                                @endphp
+                                                {{ date('d M Y', strtotime($member->dob)).' ('.$interval->format('%yY %mM').')' }}
+
+                                            </td>
                                             <td>{{ config('smj.relation_label.'.$member->relation) }}</td>
                                             <td>{{ ($member->gender == 'M' ? 'પુરુષ' : 'સ્ત્રી') }}</td>
                                             <td>{{ $member->mobile }}</td>

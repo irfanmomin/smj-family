@@ -52,6 +52,7 @@ return [
                 'created_at' => 'Created At',
                 'is_main' => 'Is Main Member',
                 'is_main_ph' => '1 / 0',
+                'areacity' => 'Area / City',
             ],
             'validation' => [
                 'surname' => 'અટક',
