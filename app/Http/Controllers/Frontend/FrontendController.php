@@ -19,6 +19,7 @@ class FrontendController extends Controller
         $settingData = Setting::first();
         $google_analytics = $settingData->google_analytics;
 
+        return redirect()->route('admin.family.index');
         return view('frontend.index', compact('google_analytics', $google_analytics));
     }
 

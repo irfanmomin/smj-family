@@ -83,13 +83,24 @@
                         </div>
                     </div>
                 </div><!--form control-->
-                {{-- Main Member City --}}
-                <div class="form-group">
-                    {{ Form::label('city', trans('labels.backend.family.validationedit.city'), ['class' => 'col-lg-2 control-label required']) }}
-                    <div class="col-lg-10">
-                        {!! Form::select('city', $cityList, (isset($family->city) ? $family->city : '' ), ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required', 'disabled' => ($isMainMember == true) ? false : true]) !!}
-                    </div><!--col-lg-10-->
-                </div><!--form control-->
+                @if (access()->allow('admin') == false)
+                    {{-- Main Member City --}}
+                    <div class="form-group">
+                        {{ Form::label('city', trans('labels.backend.family.validationedit.city'), ['class' => 'col-lg-2 control-label required']) }}
+                        <div class="col-lg-10">
+                            {!! Form::select('city', $cityList, (isset($family->city) ? $family->city : '' ), ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required', 'disabled' => 'disabled']) !!}
+                        </div><!--col-lg-10-->
+                    </div><!--form control-->
+                    <input type="hidden" name="city" value="DHOLKA" />
+                @else
+                    {{-- Main Member City --}}
+                    <div class="form-group">
+                        {{ Form::label('city', trans('labels.backend.family.validationedit.city'), ['class' => 'col-lg-2 control-label required']) }}
+                        <div class="col-lg-10">
+                            {!! Form::select('city', $cityList, (isset($family->city) ? $family->city : '' ), ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required', 'disabled' => ($isMainMember == true) ? false : true]) !!}
+                        </div><!--col-lg-10-->
+                    </div><!--form control-->
+                @endif
                 {{-- Main Member Area --}}
                 <div class="form-group">
                     {{ Form::label('area', trans('labels.backend.family.validationedit.area'), ['class' => 'col-lg-2 control-label required']) }}
