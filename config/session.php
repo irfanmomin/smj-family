@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'lifetime' => 120,
+    'lifetime' => 9000,
 
     'expire_on_close' => false,
 
@@ -186,6 +186,6 @@ return [
     |
     */
     'timeout_status' => env('SESSION_TIMEOUT_STATUS', true),
-    'timeout'        => env('SESSION_TIMEOUT', 600),
+    'timeout'        => env('SESSION_TIMEOUT', 9000),
 
 ];

@@ -329,7 +329,7 @@ if (!function_exists('getAllAreaList')) {
                 return $areaList;
             }
 
-            $areaList = AreaCity::where('city', 'LIKE', '%'.$city.'%')->groupBy('area')->orderBy('id', 'asc')->pluck('area')->toArray();
+            $areaList = AreaCity::where('city', 'LIKE', '%'.$city.'%')->groupBy('area')->orderBy('area', 'asc')->pluck('area')->toArray();
 
             if (count($areaList) > 0)
                 return $areaList;

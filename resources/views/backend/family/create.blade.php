@@ -12,6 +12,9 @@
     {{ Form::open(['route' => 'admin.family.store', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post', 'id' => 'create-new-family']) }}
         <div class="box box-info">
             <div class="box-body">
+                <div class="loading" style="display:none;">
+                    <div class="loader"></div>
+                </div>
                 {{-- New Member First Name --}}
                 <div class="form-group">
                     {{ Form::label('firstname', trans('labels.backend.family.validation.firstname'), ['class' => 'col-lg-2 control-label required']) }}
@@ -111,10 +114,12 @@
 @section('after-scripts')
     <script type="text/javascript">
         jQuery(document).ready(function() {
+            $('.loading').hide();
             SMJ.Family.init();
             SMJ.Utility.Datepicker.init();
 
             $(document).on('change', '#city', function() {
+                $('.loading').show();
                 var cityName = $(this).val();
 
                 $.ajax({
@@ -139,7 +144,7 @@
                         });
 
                         $('#area').html(output.join(''));
-
+                        $('.loading').hide();
                         return true;
                     },
                 });
