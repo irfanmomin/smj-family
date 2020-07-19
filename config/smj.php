@@ -65,6 +65,8 @@ return [
         'Mother' => 'માતા',
         'Son' => 'પુત્ર',
         'Daughter' => 'પુત્રી',
+        'Grand Son' => 'પૌત્ર',
+        'Grand Daughter' => 'પૌત્રી',
         'Wife' => 'વહુ',
         'Brother' => 'ભાઈ',
         'Sister' => 'બહેન',
