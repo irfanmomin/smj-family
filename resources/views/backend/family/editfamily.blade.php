@@ -203,7 +203,7 @@
                         <div class="form-group aadhar-box">
                             {{ Form::label('aadhar_id', trans('labels.backend.family.validation.aadhar_id'), ['class' => 'col-lg-2 control-label']) }}
                             <div class="col-lg-10">
-                                {{ Form::text('aadhar_id', null, ['class' => 'form-control box-size aadhar_id_field', 'title' => 'Only Number is Allowed', 'pattern' => '^\s*-?[0-9-]{14}\s*$', 'placeholder' => trans('labels.backend.family.validation.aadharidph'), 'maxlength' => '14']) }}
+                                {{ Form::text('aadhar_id', null, ['class' => 'form-control box-size aadhar_id_field', 'id' => 'aadhar-input', 'title' => 'Only Number is Allowed', 'pattern' => '^\s*-?[0-9-]{14}\s*$', 'placeholder' => trans('labels.backend.family.validation.aadharidph'), 'maxlength' => '14']) }}
                             </div><!--col-lg-10-->
                         </div><!--form control-->
                         {{-- New Member Election Number --}}
@@ -253,6 +253,15 @@
 
 @section('after-scripts')
     <script type="text/javascript">
+        document.getElementById('aadhar-input').addEventListener('input', function (e) {
+            //e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+            var foo = e.target.value;
+            foo = foo.split("-").join("");
+            if (foo.length > 0) {
+                foo = foo.match(new RegExp('.{1,4}', 'g')).join("-");
+            }
+            e.target.value = foo;
+        });
         jQuery(document).ready(function() {
             SMJ.Family.init();
             SMJ.Utility.Datepicker.init();
