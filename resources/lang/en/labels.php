@@ -73,10 +73,10 @@ return [
                 'malegender' => 'પુરુષ',
                 'femalegender' => 'સ્ત્રી',
                 'aadhar_id' => 'આધાર નંબર',
-                'election_id' => 'ચુંટણી કાર્ડ નંબર',
+                'election_id' => 'ડોકયુમેંટ નું નામ તથા નંબર',
                 'aadharidph' => '0000-0000-0000',
                 'radioaadhar' => 'આધાર કાર્ડ',
-                'radioelection' => 'ચુંટણી કાર્ડ',
+                'radioelection' => 'Other',
                 'doc_type' => 'ડોકયુમેંટ',
             ],
             'validationedit' => [
@@ -108,7 +108,7 @@ return [
                 'area' => 'વિસ્તાર',
                 'city' => 'સ્થળ',
                 'aadhar_id' => 'આધાર',
-                'election_id' => 'ચુંટણી કાર્ડ',
+                'election_id' => 'Other',
             ],
             'buttons' => [
                 'create' => 'SUBMIT',
