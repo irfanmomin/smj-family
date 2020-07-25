@@ -6,13 +6,13 @@ var SMJ = {
                 $(".glyphicon").toggleClass("glyphicon-minus", "glyphicon-plus");
             });
 
-            $('.aadhar_id_field').keyup(function() {
+            /* $('.aadhar_id_field').keyup(function() {
                 var foo = $(this).val().split("-").join(""); // remove hyphens
                 if (foo.length > 0) {
                   foo = foo.match(new RegExp('.{1,4}', 'g')).join("-");
                 }
                 $(this).val(foo);
-            });
+            }); */
 
             $('input[type=radio][name=doc_type]').on('click', function(event){
                 var clickedEle = $(this).val();
