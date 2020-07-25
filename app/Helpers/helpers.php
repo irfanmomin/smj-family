@@ -455,3 +455,24 @@ if (!function_exists('getStaffName')) {
         return null;
     }
 }
+
+if (!function_exists('checkAllChildVerified')) {
+
+    /**
+     * @return bool
+     */
+    function checkAllChildVerified($childIDs = null)
+    {
+        try {
+            if ($childIDs == null) {
+                return false;
+            }
+
+            $mainMemberArray = Family::whereIn('id', $childIDs)->where('is_verified', 0)->get()->count();
+
+            return ($mainMemberArray <= 0 ? true : false);
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}

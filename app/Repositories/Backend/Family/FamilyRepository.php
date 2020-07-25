@@ -37,8 +37,17 @@ class FamilyRepository extends BaseRepository
     /**
      * @return mixed
      */
-    public function getForDataTable()
+    public function getForDataTable($request = null)
     {
+        $formData = NULL;
+        $approveTypeFlg = 0;
+
+        if (!is_null($request)) {
+            $formData = $request->get('formData');
+        }
+
+        $columns = $request->request->get('columns');
+
         $query =  $this->query()
             ->leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.family").'.created_by')
             ->select([
@@ -52,12 +61,41 @@ class FamilyRepository extends BaseRepository
                 config('smj.tables.family').'.surname',
                 config('smj.tables.family').'.area',
                 config('smj.tables.family').'.city',
+                config('smj.tables.family').'.is_verified',
                 config('smj.tables.family').'.created_at',
             ])->where(config('smj.tables.family').'.is_main', 1)
             ->whereNull(config('smj.tables.family').'.family_id');
 
         if (!access()->allow('view-all-members-list')) {
             $query->where(config('smj.tables.family').'.created_by', access()->user()->id);
+        }
+
+        // If any Custom filter is applid
+        if (! is_null($formData) && count($formData) > 0) {
+            $arrRequest = [];
+
+            // Make Structured Filters Data
+            foreach ($formData as $data) {
+                if ( $data['name'] == 'verifyfilter' ) {
+                    $arrRequest[$data['name']] = $data['value'];
+                }
+            }
+
+            if (
+                count($arrRequest) > 0 &&
+                isset($arrRequest['verifyfilter']) &&
+                !empty($arrRequest['verifyfilter']) &&
+                ($arrRequest['verifyfilter'] == 'verified' || $arrRequest['verifyfilter'] == 'unverified')
+            ) {
+                // Verified Non verified Filter
+                if ($arrRequest['verifyfilter'] == 'verified') {
+                    $query = $query->where(config('smj.tables.family').'.is_verified', 1);
+                } else if ($arrRequest['verifyfilter'] == 'unverified') {
+                    $query = $query->where(config('smj.tables.family').'.is_verified', 0);
+                }
+            } else {
+                return $query;
+            }
         }
 
         return $query;
@@ -83,6 +121,7 @@ class FamilyRepository extends BaseRepository
                 config('smj.tables.family').'.is_main',
                 config('smj.tables.family').'.area',
                 config('smj.tables.family').'.city',
+                config('smj.tables.family').'.is_verified',
                 config('smj.tables.family').'.created_at',
             ]);
 
@@ -112,6 +151,8 @@ class FamilyRepository extends BaseRepository
         $family->relation = isset($input['relation']) ? $input['relation'] : 'Self';
         $family->is_main = isset($input['is_main']) ? $input['is_main'] : '1';
         $family->family_id = isset($input['family_id']) ? $input['family_id'] : NULL;
+        $family->aadhar_id = isset($input['aadhar_id']) ? $input['aadhar_id'] : NULL;
+        $family->election_id = isset($input['election_id']) ? $input['election_id'] : NULL;
         $family->created_by = access()->user()->id;
         $family->created_at = Carbon::now();
         $family->updated_at = NULL;

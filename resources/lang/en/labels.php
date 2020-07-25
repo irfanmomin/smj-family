@@ -53,6 +53,7 @@ return [
                 'is_main' => 'Is Main Member',
                 'is_main_ph' => '1 / 0',
                 'areacity' => 'Area / City',
+                'is_verified' => 'Status',
             ],
             'validation' => [
                 'surname' => 'અટક',
@@ -71,6 +72,12 @@ return [
                 'areaholder' => 'પસંદ કરો',
                 'malegender' => 'પુરુષ',
                 'femalegender' => 'સ્ત્રી',
+                'aadhar_id' => 'આધાર નંબર',
+                'election_id' => 'ચુંટણી કાર્ડ નંબર',
+                'aadharidph' => '0000-0000-0000',
+                'radioaadhar' => 'આધાર કાર્ડ',
+                'radioelection' => 'ચુંટણી કાર્ડ',
+                'doc_type' => 'ડોકયુમેંટ',
             ],
             'validationedit' => [
                 'surname' => 'અટક',
@@ -100,6 +107,8 @@ return [
                 'mobile' => 'મોબાઈલ નંબર',
                 'area' => 'વિસ્તાર',
                 'city' => 'સ્થળ',
+                'aadhar_id' => 'આધાર',
+                'election_id' => 'ચુંટણી કાર્ડ',
             ],
             'buttons' => [
                 'create' => 'SUBMIT',

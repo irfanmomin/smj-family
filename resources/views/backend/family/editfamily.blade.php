@@ -35,13 +35,33 @@
                                 <th>{{ trans('labels.backend.family.memberslist.relation') }}</th>
                                 <th>{{ trans('labels.backend.family.memberslist.gender') }}</th>
                                 <th>{{ trans('labels.backend.family.memberslist.mobile') }}</th>
+                                <th>{{ trans('labels.backend.family.memberslist.aadhar_id') }}</th>
+                                <th>{{ trans('labels.backend.family.memberslist.election_id') }}</th>
                                 <th>{{ trans('labels.backend.family.memberslist.area') }}</th>
                                 <th>{{ trans('labels.backend.family.memberslist.city') }}</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><a href="{{ route('admin.family.edit', $mainMemberArray['id']) }}"><img width="18" src="{{url('/')}}/img/edit.png" />&nbsp;<a href="{{ route('admin.family.deletefullfamily', $mainMemberArray['id']) }}" onclick="return confirm('Are you sure, You want to delete FULL Family?')" data-method="delete" ><img width="18" src="{{url('/')}}/img/delete.png" /></a></a></td>
+                                <tr style="background-color: wheat;">
+                                    <td>
+                                        <a href="{{ route('admin.family.edit', $mainMemberArray['id']) }}">
+                                            <img width="18" src="{{url('/')}}/img/edit.png" />
+                                        </a>
+                                        &nbsp;
+                                        <a href="{{ route('admin.family.deletefullfamily', $mainMemberArray['id']) }}" onclick="return confirm('Are you sure, You want to delete FULL Family?')" data-method="delete" >
+                                            <img width="18" src="{{url('/')}}/img/delete.png" />
+                                        </a>
+                                        &nbsp;
+                                        @if (access()->allow('view-all-members-list') == true && $mainMemberArray['is_verified'] == 0)
+                                            <a href="{{ route('admin.family.verifymember', $mainMemberArray['id']) }}" onclick="return confirm('બધી વિગત બરાબર છે?')">
+                                                <img width="18" src="{{url('/')}}/img/verify.png" />
+                                            </a>
+                                        @elseif (access()->allow('view-all-members-list') == true && $mainMemberArray['is_verified'] == 1)
+                                            <a href="{{ route('admin.family.unverifymember', $mainMemberArray['id']) }}">
+                                                <img width="22" src="{{url('/')}}/img/unverify.png" />
+                                            </a>
+                                        @endif
+                                    </td>
                                     <td>1</td>
                                     <td>{{ $mainMemberArray['firstname'].' '.$mainMemberArray['lastname'] }}</td>
                                     <td>
@@ -57,6 +77,8 @@
                                     <td>{{ config('smj.relation_label.'.$mainMemberArray['relation']) }}</td>
                                     <td>{{ ($mainMemberArray['gender'] == 'M' ? 'પુરુષ' : 'સ્ત્રી') }}</td>
                                     <td>{{ $mainMemberArray['mobile'] }}</td>
+                                    <td>{{ $mainMemberArray['aadhar_id'] }}</td>
+                                    <td>{{ $mainMemberArray['election_id'] }}</td>
                                     <td>{{ $mainMemberArray['area'] }}</td>
                                     <td>{{ $mainMemberArray['city'] }}</td>
                                 </tr>
@@ -65,12 +87,28 @@
                                     @foreach ($childMembersArray as $member)
                                         @php $count++; @endphp
                                         <tr>
-                                            <td><a href="{{ route('admin.family.edit', $member->id) }}"><img width="18" src="{{url('/')}}/img/edit.png" /></a>&nbsp;<a href="{{ route('admin.family.destroy', $member) }}" class="" data-method="delete"
+                                            <td>
+                                                <a href="{{ route('admin.family.edit', $member->id) }}">
+                                                    <img width="18" src="{{url('/')}}/img/edit.png" />
+                                                </a>
+                                                &nbsp;
+                                                <a href="{{ route('admin.family.destroy', $member) }}" class="" data-method="delete"
                                                     data-trans-button-cancel="{{ trans('buttons.general.cancel') }}"
                                                     data-trans-button-confirm="{{ trans('buttons.general.crud.delete') }}"
                                                     data-trans-title="{{ trans('strings.backend.general.are_you_sure') }}">
-                                                <img width="18" src="{{url('/')}}/img/delete.png" />
-                                                </a></td>
+                                                    <img width="18" src="{{url('/')}}/img/delete.png" />
+                                                </a>
+                                                &nbsp;
+                                                @if (access()->allow('view-all-members-list') == true && $member->is_verified == 0)
+                                                    <a href="{{ route('admin.family.verifymember', $member->id) }}" onclick="return confirm('બધી વિગત બરાબર છે?')">
+                                                        <img width="18" src="{{url('/')}}/img/verify.png" />
+                                                    </a>
+                                                @elseif (access()->allow('view-all-members-list') == true && $member->is_verified == 1)
+                                                    <a href="{{ route('admin.family.unverifymember', $member->id) }}">
+                                                        <img width="22" src="{{url('/')}}/img/unverify.png" />
+                                                    </a>
+                                                @endif
+                                            </td>
                                             <td>{{ $count }}</td>
                                             <td>{{ $member->firstname.' '.$member->lastname }}</td>
                                             <td>
@@ -86,6 +124,8 @@
                                             <td>{{ config('smj.relation_label.'.$member->relation) }}</td>
                                             <td>{{ ($member->gender == 'M' ? 'પુરુષ' : 'સ્ત્રી') }}</td>
                                             <td>{{ $member->mobile }}</td>
+                                            <td>{{ $member->aadhar_id }}</td>
+                                            <td>{{ $member->election_id }}</td>
                                             <td>{{ $member->area }}</td>
                                             <td>{{ $member->city }}</td>
                                         </tr>
@@ -150,6 +190,29 @@
                                 </div>
                             </div>
                         </div><!--form control-->
+                        {{-- Main Member Document Type --}}
+                        <div class="form-group">
+                            {{ Form::label('doc_type', trans('labels.backend.family.validation.doc_type'), ['class' => 'col-lg-2 control-label']) }}
+                            <div class="col-lg-10">
+                                    {{ Form::radio('doc_type', 'aadhar',true,['required' => 'required', 'class'=>'flat-blue','id' => 'aadhar']) }} {{ trans('labels.backend.family.validation.radioaadhar') }}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {{ Form::radio('doc_type', 'election',false,['required' => 'required', 'class'=>'flat-blue','id' => 'election']) }} {{ trans('labels.backend.family.validation.radioelection') }}
+                            </div>
+                        </div>
+                        {{-- New Member Aadhar Number --}}
+                        <div class="form-group aadhar-box">
+                            {{ Form::label('aadhar_id', trans('labels.backend.family.validation.aadhar_id'), ['class' => 'col-lg-2 control-label']) }}
+                            <div class="col-lg-10">
+                                {{ Form::text('aadhar_id', null, ['class' => 'form-control box-size aadhar_id_field', 'title' => 'Only Number is Allowed', 'pattern' => '^\s*-?[0-9-]{14}\s*$', 'placeholder' => trans('labels.backend.family.validation.aadharidph'), 'maxlength' => '14']) }}
+                            </div><!--col-lg-10-->
+                        </div><!--form control-->
+                        {{-- New Member Election Number --}}
+                        <div class="form-group election-box">
+                            {{ Form::label('election_id', trans('labels.backend.family.validation.election_id'), ['class' => 'col-lg-2 control-label']) }}
+                            <div class="col-lg-10">
+                                {{ Form::text('election_id', null, ['class' => 'form-control box-size election_id_field', 'title' => 'Only Number is Allowed', 'maxlength' => '25']) }}
+                            </div><!--col-lg-10-->
+                        </div><!--form control-->
                         <input type="hidden" name="surname" value="{{ $mainMemberArray['surname'] }}" />
                         <input type="hidden" name="area" value="{{ $mainMemberArray['area'] }}" />
                         <input type="hidden" name="city" value="{{ $mainMemberArray['city'] }}" />
@@ -193,7 +256,7 @@
         jQuery(document).ready(function() {
             SMJ.Family.init();
             SMJ.Utility.Datepicker.init();
-
+            $('.election-box').hide();
             $(document).on('change', '#city', function() {
                 var cityName = $(this).val();
 

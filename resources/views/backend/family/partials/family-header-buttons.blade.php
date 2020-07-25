@@ -1,6 +1,14 @@
 <!--Action Button-->
 @if (access()->allow('view-all-members-list') == true)
     <div class="btn-group">
+        {{ Form::open(['route' => 'admin.family.get', 'class' => 'form-horizontal', 'method' => 'post', 'id' => 'family_advance_search','autocomplete'=>'off']) }}
+            {!! Form::select('verifyfilter', ['all' => 'All', 'unverified' => 'Non Verified', 'verified' => 'Verified'], null, ["class" => "form-control box-size", 'id' => 'verify-select',"data-column" => 4, 'required' => 'required']) !!}
+            {{ Form::submit('Search', ['class' => 'btn btn-primary btn-md hidden']) }}
+        {{ Form::close() }}
+    </div>
+@endif
+@if (access()->allow('admin') == true)
+    <div class="btn-group">
         <button type="button" class="btn btn-warning btn-flat dropdown-toggle" data-toggle="dropdown">@lang('menus.backend.access.export')
             <span class="caret"></span>
             <span class="sr-only">Toggle Dropdown</span>

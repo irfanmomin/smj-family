@@ -18,6 +18,8 @@ class Family extends BaseModel
         'firstname',
         'lastname',
         'surname',
+        'aadhar_id',
+        'election_id',
         'mobile',
         'dob',
         'gender',
@@ -26,6 +28,7 @@ class Family extends BaseModel
         'area',
         'is_main',
         'expired_date',
+        'is_verified',
         'created_by',
         'updated_by',
     ];

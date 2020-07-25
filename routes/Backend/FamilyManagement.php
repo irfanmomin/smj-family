@@ -22,4 +22,6 @@ Route::group(['namespace' => 'Family'], function () {
 
     // Delete Full Family Route
     Route::any('family/deletefullfamily/{id}', 'FamilyController@deleteFullFamily')->name('family.deletefullfamily');
+    Route::any('family/verifymember/{id}', 'FamilyController@verifyMember')->name('family.verifymember');
+    Route::any('family/unverifymember/{id}', 'FamilyController@unVerifyMember')->name('family.unverifymember');
 });

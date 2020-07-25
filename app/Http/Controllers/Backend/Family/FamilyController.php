@@ -90,7 +90,7 @@ class FamilyController extends Controller
     {
         $input = $request->except('_token');
 
-        Validator::make($input, [
+        $validatedData = $request->validate([
             'firstname' => 'required',
             'lastname'  => 'required',
             'surname'   => 'required',
@@ -99,8 +99,16 @@ class FamilyController extends Controller
             'dob'       => 'required|date|before_or_equal:' . date('Y-m-d'),
             'city'      => 'required',
             'area'      => 'required',
+            'election_id'      => 'required_if:doc_type,election|max:25',
+        ]);
 
-        ])->validate();
+        if ( $input['election_id'] == null && $input['aadhar_id'] != '0000-0000-0000' ) {
+            $validatedData = $request->validate([
+                'aadhar_id'      => 'required_if:doc_type,aadhar|unique:members|max:14',
+            ]);
+        }
+
+        $input = $request->except('_token', 'doc_type');
 
         $family = $this->family->create($input);
 
@@ -127,25 +135,29 @@ class FamilyController extends Controller
      */
     public function editFamilyDetails($id = 0, EditFamilyRequest $request)
     {
-        if ( isMainMember($id) == false ) {
-            return new RedirectResponse(route('admin.family.index'), ['flash_danger' => trans('alerts.backend.family.wrongid')]);
+        if (access()->user()->id == Family::findorfail($id)->created_by || access()->allow('view-all-members-list')) {
+            if ( isMainMember($id) == false ) {
+                return new RedirectResponse(route('admin.family.index'), ['flash_danger' => trans('alerts.backend.family.wrongid')]);
+            }
+
+            $mainMemberArray = getMainMemberFullDetails($id);
+            $childMembersArray = getChildMembersDetails($id);
+
+            // City List Array
+            $cityList = getAllCityList();
+            $cityListArray = array_combine($cityList, $cityList);
+            // Area List Array
+            $areaList = getAllAreaList('DHOLKA');
+            $areaListArray = array_combine($areaList, $areaList);
+
+            return view('backend.family.editfamily')
+                ->with('mainMemberArray', $mainMemberArray)
+                ->with('childMembersArray', $childMembersArray)
+                ->with('cityList', $cityListArray)
+                ->with('areaList', $areaListArray);
         }
 
-        $mainMemberArray = getMainMemberFullDetails($id);
-        $childMembersArray = getChildMembersDetails($id);
-
-        // City List Array
-        $cityList = getAllCityList();
-        $cityListArray = array_combine($cityList, $cityList);
-        // Area List Array
-        $areaList = getAllAreaList('DHOLKA');
-        $areaListArray = array_combine($areaList, $areaList);
-
-        return view('backend.family.editfamily')
-            ->with('mainMemberArray', $mainMemberArray)
-            ->with('childMembersArray', $childMembersArray)
-            ->with('cityList', $cityListArray)
-            ->with('areaList', $areaListArray);
+        return new RedirectResponse(route('admin.family.index'), ['flash_danger' => 'You are not allowed to See this page']);
     }
 
     /**
@@ -156,24 +168,28 @@ class FamilyController extends Controller
      */
     public function edit(Family $family, EditFamilyRequest $request)
     {
-        // City List Array
-        $cityList = getAllCityList();
-        $cityListArray = array_combine($cityList, $cityList);
+        if (access()->user()->id == $family->created_by || access()->allow('view-all-members-list')) {
+            // City List Array
+            $cityList = getAllCityList();
+            $cityListArray = array_combine($cityList, $cityList);
 
-        // Area List Array
-        $city = isset($family->city) ? $family->city : 'DHOLKA';
-        $areaList = getAllAreaList($city);
-        $areaListArray = array_combine($areaList, $areaList);
+            // Area List Array
+            $city = isset($family->city) ? $family->city : 'DHOLKA';
+            $areaList = getAllAreaList($city);
+            $areaListArray = array_combine($areaList, $areaList);
 
-        $isMainMember = isMainMember($family->id);
+            $isMainMember = isMainMember($family->id);
 
-        $mainMemberArray = '';
+            $mainMemberArray = '';
 
-        if (!$isMainMember && $family->family_id != NULL) {
-            $mainMemberArray = getMainMemberFullDetails($family->family_id);
+            if (!$isMainMember && $family->family_id != NULL) {
+                $mainMemberArray = getMainMemberFullDetails($family->family_id);
+            }
+
+            return new EditResponse($family, $cityListArray, $areaListArray, $isMainMember, $mainMemberArray);
         }
 
-        return new EditResponse($family, $cityListArray, $areaListArray, $isMainMember, $mainMemberArray);
+        return new RedirectResponse(route('admin.family.index'), ['flash_danger' => 'You are not allowed to edit Other\'s details.']);
     }
 
     /**
@@ -186,7 +202,22 @@ class FamilyController extends Controller
     {
         $input = $request->all();
 
-        $this->family->update($family, $request->except(['_token', '_method']));
+        $validatedData = $request->validate([
+            'firstname' => 'required',
+            'lastname'  => 'required',
+            'gender'    => 'required',
+            'mobile'    => 'required|numeric|gt:0',
+            'dob'       => 'required|date|before_or_equal:' . date('Y-m-d'),
+            'election_id'      => 'required_if:doc_type,election|max:25',
+        ]);
+
+        if ($request->get('election_id') == null && $request->get('aadhar_id') != '0000-0000-0000') {
+            $validatedData = $request->validate([
+                'aadhar_id'      => 'required_if:doc_type,aadhar|max:14|unique:members,aadhar_id,'.$family->id,
+            ]);
+        }
+
+        $this->family->update($family, $request->except(['_token', '_method', 'doc_type']));
 
         $familyID = $family->id;
 
@@ -205,15 +236,19 @@ class FamilyController extends Controller
      */
     public function destroy(Family $family, DeleteFamilyRequest $request)
     {
-        $familyID = $family->id;
+        if (access()->user()->id == $family->created_by || access()->allow('view-all-members-list')) {
+            $familyID = $family->id;
 
-        if (isMainMember($family->id) == false) {
-            $familyID = $family->family_id;
+            if (isMainMember($family->id) == false) {
+                $familyID = $family->family_id;
+            }
+
+            $this->family->delete($family);
+
+            return new RedirectResponse(route('admin.family.editfamily', ['id' => $familyID]), ['flash_success' => trans('alerts.backend.family.deletedmember')]);
         }
 
-        $this->family->delete($family);
-
-        return new RedirectResponse(route('admin.family.editfamily', ['id' => $familyID]), ['flash_success' => trans('alerts.backend.family.deletedmember')]);
+        return new RedirectResponse(route('admin.family.index'), ['flash_danger' => 'You are not allowed to delete this member.']);
     }
 
     /**
@@ -224,17 +259,21 @@ class FamilyController extends Controller
      */
     public function deleteFullFamily($id)
     {
-        // Get All Child members of the Family
-        $childIDs = getChildMemberIDs($id);
+        if (access()->user()->id == Family::findorfail($id)->created_by || access()->allow('view-all-members-list')) {
+            // Get All Child members of the Family
+            $childIDs = getChildMemberIDs($id);
 
-        array_push($childIDs, (int) $id);
+            array_push($childIDs, (int) $id);
 
-        // Delete All Child members of the Family
-        if (isset($childIDs) && count($childIDs) > 0) {
-            Family::destroy($childIDs);
+            // Delete All Child members of the Family
+            if (isset($childIDs) && count($childIDs) > 0) {
+                Family::destroy($childIDs);
+            }
+
+            return new RedirectResponse(route('admin.family.index'), ['flash_danger' => trans('alerts.backend.family.deleted')]);
         }
 
-        return new RedirectResponse(route('admin.family.index'), ['flash_danger' => trans('alerts.backend.family.deleted')]);
+        return new RedirectResponse(route('admin.family.index'), ['flash_danger' => 'You are not allowed to delete this Family.']);
     }
 
     /**
@@ -246,5 +285,58 @@ class FamilyController extends Controller
     public function allMembersListIndex(ManageMembersListRequest $request)
     {
         return new ViewResponse('backend.family.allmembers');
+    }
+
+    /**
+     * verifyMember function
+     * Verify Member
+     * @param [type] $id
+     * @return void
+     */
+    public function verifyMember($id)
+    {
+        if (access()->allow('view-all-members-list')) {
+
+            if (isMainMember($id) == true) {
+                $childIDs = getChildMemberIDs($id);
+
+                if (count($childIDs) > 0) {
+                    $allVerified = checkAllChildVerified($childIDs);
+
+                    if (!$allVerified) {
+                        return redirect()->back()->withInput()->withFlashWarning('Please verify all Family members first!');
+                    }
+                }
+            }
+
+            $family = Family::findorfail($id);
+            $family->is_verified = '1';
+            $family->updated_by = access()->user()->id;
+            $family->save();
+
+            return redirect()->back()->withInput()->withFlashSuccess('Verified Successfully!');
+        }
+
+        return redirect()->back()->withInput()->withFlashWarning('You are not allowed to Verify / Unverify');
+    }
+
+    /**
+     * unVerifyMember function
+     * Unverify Member
+     * @param [type] $id
+     * @return void
+     */
+    public function unVerifyMember($id)
+    {
+        if (access()->allow('view-all-members-list')) {
+            $family = Family::findorfail($id);
+            $family->is_verified = 0;
+            $family->updated_by = access()->user()->id;
+            $family->save();
+
+            return redirect()->back()->withInput()->withFlashWarning('UnVerified Successfully!');
+        }
+
+        return redirect()->back()->withInput()->withFlashWarning('You are not allowed to Verify / Unverify');
     }
 }

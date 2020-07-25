@@ -25,7 +25,7 @@
                             <th>{{ trans('labels.backend.family.table.firstname') }}</th>
                             <th>{{ trans('labels.backend.family.table.areacity') }}</th>
                             <th>{{ trans('labels.backend.family.table.area') }}</th>
-                            <th>{{ trans('labels.backend.family.table.is_main') }}</th>
+                            <th>{{ trans('labels.backend.family.table.is_verified') }}</th>
                             <th>{{ trans('labels.general.actions') }}</th>
                         </tr>
                     </thead>
@@ -33,7 +33,7 @@
                         <tr>
                             <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
                             <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.family.table.areacity')]) !!}</th>
-                            <th>{!! Form::text('is_main', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.is_main_ph')]) !!}</th>
+                            <th>{!! Form::text('is_verified', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.is_main_ph')]) !!}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -63,7 +63,7 @@
                     {data: 'firstname', name: 'firstname', sortable: true},
                     {data: 'areacity', name: 'areacity'},
                     {data: 'area', name: '{{config('smj.tables.family')}}.area'},
-                    {data: 'is_main', name: '{{config('smj.tables.family')}}.is_main'},
+                    {data: 'is_verified', name: '{{config('smj.tables.family')}}.is_verified'},
                     {data: 'actions', name: 'actions', searchable: false, sortable: false},
                 ],
                 order: [[0, "asc"]],

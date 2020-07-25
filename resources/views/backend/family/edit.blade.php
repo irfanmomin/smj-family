@@ -83,6 +83,29 @@
                         </div>
                     </div>
                 </div><!--form control-->
+                {{-- Main Member Document Type --}}
+                <div class="form-group">
+                    {{ Form::label('doc_type', trans('labels.backend.family.validation.doc_type'), ['class' => 'col-lg-2 control-label']) }}
+                    <div class="col-lg-10">
+                            {{ Form::radio('doc_type', 'aadhar',(isset($family->aadhar_id) && $family->aadhar_id != NULL ? true : false ),['required' => 'required', 'class'=>'flat-blue','id' => 'aadhar']) }} {{ trans('labels.backend.family.validation.radioaadhar') }}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {{ Form::radio('doc_type', 'election',(isset($family->election_id) && $family->election_id != NULL ? true : false ),['required' => 'required', 'class'=>'flat-blue','id' => 'election']) }} {{ trans('labels.backend.family.validation.radioelection') }}
+                    </div>
+                </div>
+                {{-- New Member Aadhar Number --}}
+                <div class="form-group aadhar-box">
+                    {{ Form::label('aadhar_id', trans('labels.backend.family.validation.aadhar_id'), ['class' => 'col-lg-2 control-label']) }}
+                    <div class="col-lg-10">
+                        {{ Form::text('aadhar_id', (isset($family->aadhar_id) ? $family->aadhar_id : '' ), ['class' => 'form-control box-size aadhar_id_field', 'title' => 'Only Number is Allowed', 'pattern' => '^\s*-?[0-9-]{14}\s*$', 'placeholder' => trans('labels.backend.family.validation.aadharidph'), 'maxlength' => '14']) }}
+                    </div><!--col-lg-10-->
+                </div><!--form control-->
+                {{-- New Member Election Number --}}
+                <div class="form-group election-box">
+                    {{ Form::label('election_id', trans('labels.backend.family.validation.election_id'), ['class' => 'col-lg-2 control-label']) }}
+                    <div class="col-lg-10">
+                        {{ Form::text('election_id', (isset($family->election_id) ? $family->election_id : '' ), ['class' => 'form-control box-size election_id_field', 'title' => 'Only Number is Allowed', 'maxlength' => '25']) }}
+                    </div><!--col-lg-10-->
+                </div><!--form control-->
                 @if (access()->allow('admin') == false)
                     {{-- Main Member City --}}
                     <div class="form-group">
@@ -143,9 +166,18 @@
     <script type="text/javascript">
         jQuery(document).ready(function() {
             $('.loading').hide();
+            $('.election-box').hide();
             SMJ.Family.init();
             SMJ.Utility.Datepicker.init();
-
+            if ($('#aadhar').prop('checked')) {
+                $('.election-box').hide();
+                $('.aadhar-box').show();
+                $('.election-box input').val('');
+            } else if ($('#election').prop('checked')) {
+                $('.election-box').show();
+                $('.aadhar-box').hide();
+                $('.aadhar-box input').val('');
+            }
             $(document).on('change', '#city', function() {
                 $('.loading').show();
                 var cityName = $(this).val();

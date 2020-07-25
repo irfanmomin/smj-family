@@ -55,6 +55,15 @@ class AllMembersTableController extends Controller
                     return '-';
                 }
             })
+            ->addColumn('is_verified', function ($family) {
+                if ($family->is_verified == 1) {
+                    return '';
+                } else if ($family->is_verified == 0) {
+                    return '<span class="label label-danger">Not Verified</span>';
+                } else {
+                    return '-';
+                }
+            })
             ->addColumn('actions', function ($family) {
                 return $family->action_buttons;
             })

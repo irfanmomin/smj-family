@@ -25,6 +25,7 @@
                             <th>{{ trans('labels.backend.family.table.firstname') }}</th>
                             <th>{{ trans('labels.backend.family.table.areacity') }}</th>
                             <th>{{ trans('labels.backend.family.table.area') }}</th>
+                            <th>{{ trans('labels.backend.family.table.is_verified') }}</th>
                             <th>{{ trans('labels.general.actions') }}</th>
                         </tr>
                     </thead>
@@ -32,6 +33,7 @@
                         <tr>
                             <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
                             <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.family.table.areacity')]) !!}</th>
+                            <th>{!! Form::text('is_verified', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.is_verified')]) !!}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -46,21 +48,25 @@
     {{ Html::script(mix('js/dataTable.js')) }}
 
     <script>
-        //Below written line is short form of writing $(document).ready(function() { })
-        $(document).ready(function() {
+        function generateDataTable(param = {}) {
             var dataTable = $('#family-table').dataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
+                pageLength: 10,
+                'destroy': true,
+                'autoWidth': false,
                 ajax: {
                     url: '{{ route("admin.family.get") }}',
-                    type: 'post'
+                    type: 'post',
+                    data: param
                 },
                 columns: [
                     {data: 'fullname', name: 'fullname'},
                     {data: 'firstname', name: 'firstname', sortable: true},
                     {data: 'areacity', name: 'areacity'},
                     {data: 'area', name: '{{config('smj.tables.family')}}.area'},
+                    {data: 'is_verified', name: '{{config('smj.tables.family')}}.is_verified'},
                     {data: 'actions', name: 'actions', searchable: false, sortable: false},
                 ],
                 order: [[1, "asc"]],
@@ -94,6 +100,22 @@
             });
 
             Backend.DataTableSearch.init(dataTable);
+        }
+
+        $(function() {
+            generateDataTable({formData: []});
+            $('#family_advance_search').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $('#family_advance_search').serializeArray();
+                console.log(formData);
+                generateDataTable({formData: formData});
+            });
+
+            $('#verify-select').on('change', function() {
+                var $form = $(this).closest('form');
+                $form.find('input[type=submit]').click();
+            });
         });
+
     </script>
 @endsection
