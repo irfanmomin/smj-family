@@ -168,8 +168,17 @@
 
 @section('after-scripts')
     <script type="text/javascript">
-        document.getElementById('aadhar-input').addEventListener('input', function (e) {
+        /* document.getElementById('aadhar-input').addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+        }); */
+        document.getElementById('aadhar-input').addEventListener('input', function (e) {
+            //e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+            var foo = e.target.value;
+            foo = foo.split("-").join("");
+            if (foo.length > 0) {
+                foo = foo.match(new RegExp('.{1,4}', 'g')).join("-");
+            }
+            e.target.value = foo;
         });
         jQuery(document).ready(function() {
             $('.loading').hide();
