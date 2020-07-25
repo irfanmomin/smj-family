@@ -134,7 +134,11 @@
                 {{-- Including Form blade file --}}
                 <div class="form-group">
                     <div class="edit-form-btn">
-                    {{ link_to_route('admin.family.index', trans('buttons.general.cancel'), [], ['class' => 'btn btn-danger btn-md']) }}
+                    @if ( $isMainMember == false && !empty($mainMemberArray))
+                        {{ link_to_route('admin.family.editfamily', trans('buttons.general.cancel'), ['id' => $mainMemberArray['id']], ['class' => 'btn btn-danger btn-md']) }}
+                    @else
+                        {{ link_to_route('admin.family.editfamily', trans('buttons.general.cancel'), ['id' => $family->id], ['class' => 'btn btn-danger btn-md']) }}
+                    @endif
                     <!-- <a class="btn btn-success btn-md" id="family-main-form-next" href="javascript:void(0);" title="family-main-form-next">Submit</a> -->
                     {{ Form::submit(trans('labels.backend.family.buttons.update'), ['class' => 'btn btn-success btn-md']) }}
                     <div class="clearfix"></div>
