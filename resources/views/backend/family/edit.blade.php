@@ -103,7 +103,7 @@
                 <div class="form-group election-box">
                     {{ Form::label('election_id', trans('labels.backend.family.validation.election_id'), ['class' => 'col-lg-2 control-label']) }}
                     <div class="col-lg-10">
-                        {{ Form::text('election_id', (isset($family->election_id) ? $family->election_id : '' ), ['class' => 'form-control box-size election_id_field', 'title' => 'Only Number is Allowed', 'maxlength' => '25']) }}
+                        {{ Form::text('election_id', (isset($family->election_id) ? $family->election_id : '' ), ['class' => 'form-control box-size election_id_field', 'title' => 'Only Number is Allowed', 'maxlength' => '255']) }}
                     </div><!--col-lg-10-->
                 </div><!--form control-->
                 {{-- New Member Education --}}

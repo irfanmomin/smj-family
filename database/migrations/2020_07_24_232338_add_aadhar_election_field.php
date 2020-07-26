@@ -15,7 +15,7 @@ class AddAadharElectionField extends Migration
     {
         Schema::table('members', function (Blueprint $table) {
             $table->string('aadhar_id', 20)->after('surname')->nullable()->comment('Aadhar ID');
-            $table->string('election_id', 25)->after('aadhar_id')->nullable()->comment('Election ID');
+            $table->string('election_id', 255)->after('aadhar_id')->nullable()->comment('Election ID');
             $table->tinyInteger('is_verified')->after('expired_date')->default(0)->comment('Member Verified: 1 | Not Verified: 0');
 
             $table->index('aadhar_id');
