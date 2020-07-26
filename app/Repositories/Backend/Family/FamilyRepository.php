@@ -177,6 +177,19 @@ class FamilyRepository extends BaseRepository
         $input['dob'] = $input['date_']['year'].'-'.$input['date_']['month'].'-'.$input['date_']['day'];
         $input['updated_by'] = access()->user()->id;
 
+        if (!access()->allow('view-all-members-list')) {
+            $input['is_verified'] = 0;
+            if ( !isMainMember($family->id) ) {
+                $mainMemberID = getMainMemberID($family->id);
+                if ($mainMemberID != null) {
+                    $updateMain = Family::findorfail($mainMemberID);
+                    $updateMain->is_verified = 0;
+                    $updateMain->updated_by = access()->user()->id;
+                    $updateMain->save();
+                }
+            }
+        }
+
         $mainMemberOldMobile = $family->mobile;
 
         if ( $family->update($input) ) {

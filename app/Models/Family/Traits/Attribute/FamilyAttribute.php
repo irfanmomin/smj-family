@@ -58,7 +58,7 @@ trait FamilyAttribute
      */
     public function getEditButtonAttribute($permission, $route)
     {
-        if (access()->allow($permission)) {
+        if ( access()->allow($permission) && access()->allow('view-all-members-list') ) {
             return '<a href="'.route($route, $this->id).'" class="btn btn-flat btn-default">
                     <i data-toggle="tooltip" data-placement="top" title="Edit" class="fa fa-pencil"></i>
                 </a>';

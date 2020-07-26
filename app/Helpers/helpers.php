@@ -476,3 +476,29 @@ if (!function_exists('checkAllChildVerified')) {
         }
     }
 }
+
+if (!function_exists('getMainMemberID')) {
+
+    /**
+     * @return bool
+     */
+    function getMainMemberID($id = null)
+    {
+        try {
+            if ($id == null) {
+                return false;
+            }
+
+            if (isMainMember($id)) {
+                return $id;
+            }
+
+            $mainMemberID = Family::where('id', $id)->where('is_main', 0)->value('family_id');
+
+            return $mainMemberID;
+
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}

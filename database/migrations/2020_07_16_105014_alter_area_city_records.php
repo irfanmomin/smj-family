@@ -19,6 +19,7 @@ class AlterAreaCityRecords extends Migration
         DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'BARCHORA');");
         DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'SURTI MOHALLA');");
         DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'RENWADA');");
+        DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'DABGARWAD');");
         DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'BAWA NA GHAR PASE');");
         DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'BURAJ ROAD');");
         DB::connection('mysql')->statement("INSERT INTO `area_city` (`id`, `city`, `area`) VALUES (NULL, 'DHOLKA', 'JAMATKHANA PASE');");

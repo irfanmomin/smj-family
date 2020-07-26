@@ -159,14 +159,14 @@
                         <div class="form-group">
                             {{ Form::label('firstname', trans('labels.backend.family.validationedit.firstname'), ['class' => 'col-lg-2 control-label required']) }}
                             <div class="col-lg-10">
-                                {{ Form::text('firstname', (isset($mainMemberArray->firstname) ? $mainMemberArray->firstname : '' ), ['class' => 'form-control box-size', 'placeholder' => trans('labels.backend.family.validationedit.firstnameholder'), 'required' => 'required', 'onkeyup'=> "this.value = this.value.toUpperCase();"]) }}
+                                {{ Form::text('firstname', (isset($mainMemberArray->firstname) ? $mainMemberArray->firstname : '' ), ['class' => 'form-control box-size', 'pattern' => '^[a-zA-Z ]*$', 'title' => 'Only NAME is allowed', 'placeholder' => trans('labels.backend.family.validationedit.firstnameholder'), 'required' => 'required', 'onkeyup'=> "this.value = this.value.toUpperCase();"]) }}
                             </div><!--col-lg-10-->
                         </div><!--form control-->
                         {{-- New Member Last Name --}}
                         <div class="form-group">
                             {{ Form::label('lastname', trans('labels.backend.family.validationedit.lastname'), ['class' => 'col-lg-2 control-label required']) }}
                             <div class="col-lg-10">
-                                {{ Form::text('lastname', (isset($mainMemberArray->lastname) ? $mainMemberArray->lastname : '' ), ['class' => 'form-control box-size', 'placeholder' => trans('labels.backend.family.validationedit.lastnameholder'), 'required' => 'required', 'onkeyup' => "this.value = this.value.toUpperCase();"]) }}
+                                {{ Form::text('lastname', (isset($mainMemberArray->lastname) ? $mainMemberArray->lastname : '' ), ['class' => 'form-control box-size', 'pattern' => '^[a-zA-Z ]*$', 'title' => 'Only NAME is allowed', 'placeholder' => trans('labels.backend.family.validationedit.lastnameholder'), 'required' => 'required', 'onkeyup' => "this.value = this.value.toUpperCase();"]) }}
                             </div><!--col-lg-10-->
                         </div><!--form control-->
                         {{-- Main Member Gender --}}
