@@ -78,6 +78,8 @@ return [
                 'radioaadhar' => 'આધાર કાર્ડ',
                 'radioelection' => 'Other',
                 'doc_type' => 'ડોકયુમેંટ',
+                'education' => 'શિક્ષણ',
+                'occupation' => 'વ્યવસાય',
             ],
             'validationedit' => [
                 'surname' => 'અટક',
@@ -109,6 +111,7 @@ return [
                 'city' => 'સ્થળ',
                 'aadhar_id' => 'આધાર',
                 'election_id' => 'Other',
+                'verify' => 'Verify',
             ],
             'buttons' => [
                 'create' => 'SUBMIT',

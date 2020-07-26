@@ -29,6 +29,8 @@ class Family extends BaseModel
         'is_main',
         'expired_date',
         'is_verified',
+        'education',
+        'occupation',
         'created_by',
         'updated_by',
     ];

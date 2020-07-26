@@ -89,6 +89,20 @@
                         {{ Form::text('election_id', null, ['class' => 'form-control box-size election_id_field', 'title' => 'Only Number is Allowed', 'maxlength' => '25']) }}
                     </div><!--col-lg-10-->
                 </div><!--form control-->
+                {{-- New Member Education --}}
+                <div class="form-group">
+                    {{ Form::label('education', trans('labels.backend.family.validation.education'), ['class' => 'col-lg-2 control-label']) }}
+                    <div class="col-lg-10">
+                        {{ Form::text('education', null, ['class' => 'form-control box-size']) }}
+                    </div><!--col-lg-10-->
+                </div><!--form control-->
+                {{-- New Member Occupation --}}
+                <div class="form-group">
+                    {{ Form::label('occupation', trans('labels.backend.family.validation.occupation'), ['class' => 'col-lg-2 control-label']) }}
+                    <div class="col-lg-10">
+                        {{ Form::text('occupation', null, ['class' => 'form-control box-size']) }}
+                    </div><!--col-lg-10-->
+                </div><!--form control-->
                 @if (access()->allow('admin') == false)
                     {{-- Main Member City --}}
                     <div class="form-group">

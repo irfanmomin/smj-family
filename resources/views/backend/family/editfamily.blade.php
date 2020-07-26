@@ -29,6 +29,9 @@
                             <thead>
                             <tr>
                                 <th>{{ trans('labels.backend.family.memberslist.action') }}</th>
+                                @if (access()->allow('view-all-members-list') == true)
+                                    <th>{{ trans('labels.backend.family.memberslist.verify') }}</th>
+                                @endif
                                 <th>#</th>
                                 <th>{{ trans('labels.backend.family.memberslist.name') }}</th>
                                 <th>{{ trans('labels.backend.family.memberslist.dob') }}</th>
@@ -51,17 +54,20 @@
                                         <a href="{{ route('admin.family.deletefullfamily', $mainMemberArray['id']) }}" onclick="return confirm('Are you sure, You want to delete FULL Family?')" data-method="delete" >
                                             <img width="18" src="{{url('/')}}/img/delete.png" />
                                         </a>
-                                        &nbsp;
-                                        @if (access()->allow('view-all-members-list') == true && $mainMemberArray['is_verified'] == 0)
-                                            <a href="{{ route('admin.family.verifymember', $mainMemberArray['id']) }}" onclick="return confirm('બધી વિગત બરાબર છે?')">
-                                                <img width="18" src="{{url('/')}}/img/verify.png" />
-                                            </a>
-                                        @elseif (access()->allow('view-all-members-list') == true && $mainMemberArray['is_verified'] == 1)
-                                            <a href="{{ route('admin.family.unverifymember', $mainMemberArray['id']) }}">
-                                                <img width="22" src="{{url('/')}}/img/unverify.png" />
-                                            </a>
-                                        @endif
                                     </td>
+                                    @if (access()->allow('view-all-members-list') == true)
+                                        <td>
+                                            @if (access()->allow('view-all-members-list') == true && $mainMemberArray['is_verified'] == 0)
+                                                <a href="{{ route('admin.family.verifymember', $mainMemberArray['id']) }}" onclick="return confirm('બધી વિગત બરાબર છે?')">
+                                                    <img width="18" src="{{url('/')}}/img/unverify.png" />
+                                                </a>
+                                            @elseif (access()->allow('view-all-members-list') == true && $mainMemberArray['is_verified'] == 1)
+                                                <a href="{{ route('admin.family.unverifymember', $mainMemberArray['id']) }}" onclick="return confirm('Are you Sure?')">
+                                                    <img width="22" src="{{url('/')}}/img/verify.png" />
+                                                </a>
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>1</td>
                                     <td>{{ $mainMemberArray['firstname'].' '.$mainMemberArray['lastname'] }}</td>
                                     <td>
@@ -98,17 +104,20 @@
                                                     data-trans-title="{{ trans('strings.backend.general.are_you_sure') }}">
                                                     <img width="18" src="{{url('/')}}/img/delete.png" />
                                                 </a>
-                                                &nbsp;
-                                                @if (access()->allow('view-all-members-list') == true && $member->is_verified == 0)
-                                                    <a href="{{ route('admin.family.verifymember', $member->id) }}" onclick="return confirm('બધી વિગત બરાબર છે?')">
-                                                        <img width="18" src="{{url('/')}}/img/verify.png" />
-                                                    </a>
-                                                @elseif (access()->allow('view-all-members-list') == true && $member->is_verified == 1)
-                                                    <a href="{{ route('admin.family.unverifymember', $member->id) }}">
-                                                        <img width="22" src="{{url('/')}}/img/unverify.png" />
-                                                    </a>
-                                                @endif
                                             </td>
+                                            @if (access()->allow('view-all-members-list') == true)
+                                                <td>
+                                                    @if (access()->allow('view-all-members-list') == true && $member->is_verified == 0)
+                                                        <a href="{{ route('admin.family.verifymember', $member->id) }}" onclick="return confirm('બધી વિગત બરાબર છે?')">
+                                                            <img width="18" src="{{url('/')}}/img/unverify.png" />
+                                                        </a>
+                                                    @elseif (access()->allow('view-all-members-list') == true && $member->is_verified == 1)
+                                                        <a href="{{ route('admin.family.unverifymember', $member->id) }}" onclick="return confirm('Are you Sure?')">
+                                                            <img width="22" src="{{url('/')}}/img/verify.png" />
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            @endif
                                             <td>{{ $count }}</td>
                                             <td>{{ $member->firstname.' '.$member->lastname }}</td>
                                             <td>
@@ -211,6 +220,20 @@
                             {{ Form::label('election_id', trans('labels.backend.family.validation.election_id'), ['class' => 'col-lg-2 control-label']) }}
                             <div class="col-lg-10">
                                 {{ Form::text('election_id', null, ['class' => 'form-control box-size election_id_field', 'title' => 'Only Number is Allowed', 'maxlength' => '25']) }}
+                            </div><!--col-lg-10-->
+                        </div><!--form control-->
+                        {{-- New Member Education --}}
+                        <div class="form-group">
+                            {{ Form::label('education', trans('labels.backend.family.validation.education'), ['class' => 'col-lg-2 control-label']) }}
+                            <div class="col-lg-10">
+                                {{ Form::text('education', null, ['class' => 'form-control box-size']) }}
+                            </div><!--col-lg-10-->
+                        </div><!--form control-->
+                        {{-- New Member Occupation --}}
+                        <div class="form-group">
+                            {{ Form::label('occupation', trans('labels.backend.family.validation.occupation'), ['class' => 'col-lg-2 control-label']) }}
+                            <div class="col-lg-10">
+                                {{ Form::text('occupation', null, ['class' => 'form-control box-size']) }}
                             </div><!--col-lg-10-->
                         </div><!--form control-->
                         <input type="hidden" name="surname" value="{{ $mainMemberArray['surname'] }}" />

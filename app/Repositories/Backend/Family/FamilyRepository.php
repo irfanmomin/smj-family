@@ -153,6 +153,8 @@ class FamilyRepository extends BaseRepository
         $family->family_id = isset($input['family_id']) ? $input['family_id'] : NULL;
         $family->aadhar_id = isset($input['aadhar_id']) ? $input['aadhar_id'] : NULL;
         $family->election_id = isset($input['election_id']) ? $input['election_id'] : NULL;
+        $family->education = isset($input['education']) ? $input['education'] : NULL;
+        $family->occupation = isset($input['occupation']) ? $input['occupation'] : NULL;
         $family->created_by = access()->user()->id;
         $family->created_at = Carbon::now();
         $family->updated_at = NULL;
