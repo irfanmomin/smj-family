@@ -24,6 +24,7 @@
             <span class="sr-only">{{ trans('labels.general.toggle_navigation') }}</span>
         </a>
 
+        <span style="float: left; margin-top: 14px; color: white;">{{access()->user()->name}}</span>
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 <?php /*
@@ -80,7 +81,6 @@
                         <span class="hidden-xs">{{ access()->user()->first_name }}</span>
                         <div class="clearfix"></div>
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li class="user-header">
                             <img src="{{ access()->user()->picture }}" class="img-circle" alt="User Avatar" />
