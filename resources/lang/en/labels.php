@@ -58,7 +58,7 @@ return [
             'validation' => [
                 'surname' => 'અટક',
                 'firstname' => 'કુટુંબ ના મુખ્ય વ્યક્તિ નું નામ (અંગ્રેજી માં)',
-                'lastname' => 'પિતા નું નામ (અંગ્રેજી માં)',
+                'lastname' => 'પિતા / પતિ નું નામ (અંગ્રેજી માં)',
                 'surnameholder' => 'પસંદ કરો',
                 'firstnameholder' => 'MOHAMMADALI',
                 'lastnameholder' => 'GULAMHUSEN',
