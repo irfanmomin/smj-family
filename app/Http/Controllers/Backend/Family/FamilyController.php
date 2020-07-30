@@ -103,7 +103,7 @@ class FamilyController extends Controller
             'dob'       => 'required|date|before_or_equal:' . date('Y-m-d'),
             'city'      => 'required',
             'area'      => 'required',
-            'election_id'      => 'required_if:doc_type,election|max:25',
+            'election_id'      => 'required_if:doc_type,election|max:255',
         ]);
 
         if ( $input['election_id'] == null && $input['aadhar_id'] != '0000-0000-0000' ) {
@@ -212,7 +212,7 @@ class FamilyController extends Controller
             'gender'    => 'required',
             'mobile'    => 'required|numeric|gt:0',
             'dob'       => 'required|date|before_or_equal:' . date('Y-m-d'),
-            'election_id'      => 'required_if:doc_type,election|max:25',
+            'election_id'      => 'required_if:doc_type,election|max:255',
         ]);
 
         if ($request->get('election_id') == null && $request->get('aadhar_id') != '0000-0000-0000') {
