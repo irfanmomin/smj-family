@@ -316,6 +316,7 @@ class FamilyController extends Controller
             $family = Family::findorfail($id);
             $family->is_verified = '1';
             $family->updated_by = access()->user()->id;
+            $family->verified_by = access()->user()->id;
             $family->save();
 
             return redirect()->back()->withInput()->withFlashSuccess('Verified Successfully!');
