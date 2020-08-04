@@ -108,7 +108,8 @@ class FamilyController extends Controller
 
         if ( $input['election_id'] == null && $input['aadhar_id'] != '0000-0000-0000' ) {
             $validatedData = $request->validate([
-                'aadhar_id'      => 'required_if:doc_type,aadhar|unique:members|max:14',
+               /*  'aadhar_id'      => 'required_if:doc_type,aadhar|unique:members|max:14', */
+                'aadhar_id'      => 'required_if:doc_type,aadhar|unique:members,aadhar_id,NULL,id,deleted_at,NULL|max:14',
             ]);
         }
 
@@ -217,7 +218,8 @@ class FamilyController extends Controller
 
         if ($request->get('election_id') == null && $request->get('aadhar_id') != '0000-0000-0000') {
             $validatedData = $request->validate([
-                'aadhar_id'      => 'required_if:doc_type,aadhar|max:14|unique:members,aadhar_id,'.$family->id,
+                'aadhar_id'      => 'required_if:doc_type,aadhar|max:14|unique:members,aadhar_id,'.$family->id.',id,deleted_at,NULL',
+                /* 'aadhar_id'      => 'required_if:doc_type,aadhar|unique:members,aadhar_id,NULL,id, */
             ]);
         }
 
