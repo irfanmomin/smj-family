@@ -57,6 +57,9 @@ return [
         'Niece' => 'Niece / ભત્રીજી',
         'Grand father' => 'Grand father / દાદા',
         'Grand mother' => 'Grand mother / દાદી',
+        'Great GrandSon' => 'Great GrandSon / પ્રપૌત્ર',
+        'Great GrandDaughter' => 'Great GrandDaughter / પ્રપૌત્રી',
+        'Granddaughter-in-law' => 'Granddaughter-in-law / પૌત્ર ની વહુ',
         'Cousin' => 'Cousin / કાકા નો છોકરો - છોકરી',
         'Husband' => 'Husband / પતિ',
     ],
@@ -81,5 +84,8 @@ return [
         'Sister in law' => 'ભાભી',
         'Cousin' => 'કાકા નો છોકરો - છોકરી',
         'Husband' => 'પતિ',
+        'Great GrandSon' => 'પ્રપૌત્ર',
+        'Great GrandDaughter' => 'પ્રપૌત્રી',
+        'Granddaughter-in-law' => 'પૌત્ર ની વહુ',
     ]
 ];
