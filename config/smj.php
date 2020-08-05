@@ -62,6 +62,7 @@ return [
         'Granddaughter-in-law' => 'Granddaughter-in-law / પૌત્ર ની વહુ',
         'Cousin' => 'Cousin / કાકા નો છોકરો - છોકરી',
         'Husband' => 'Husband / પતિ',
+        'Mother in law' => 'Mother in law / સાસુ',
     ],
     'relation_label' => [
         'Self' => 'પોતે',
@@ -87,5 +88,6 @@ return [
         'Great GrandSon' => 'પ્રપૌત્ર',
         'Great GrandDaughter' => 'પ્રપૌત્રી',
         'Granddaughter-in-law' => 'પૌત્ર ની વહુ',
+        'Mother in law' => 'સાસુ',
     ]
 ];
