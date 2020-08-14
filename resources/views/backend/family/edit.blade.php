@@ -125,10 +125,19 @@
                     <div class="form-group">
                         {{ Form::label('city', trans('labels.backend.family.validationedit.city'), ['class' => 'col-lg-2 control-label required']) }}
                         <div class="col-lg-10">
+                            {!! Form::select('city', $cityList, (isset($family->city) ? $family->city : '' ), ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required', 'disabled' => ($isMainMember == true) ? false : true]) !!}
+                        </div><!--col-lg-10-->
+                    </div><!--form control-->
+                    <?php /* ?>
+                    {{-- Main Member City --}}
+                    <div class="form-group">
+                        {{ Form::label('city', trans('labels.backend.family.validationedit.city'), ['class' => 'col-lg-2 control-label required']) }}
+                        <div class="col-lg-10">
                             {!! Form::select('city', $cityList, (isset($family->city) ? $family->city : '' ), ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required', 'disabled' => 'disabled']) !!}
                         </div><!--col-lg-10-->
                     </div><!--form control-->
                     <input type="hidden" name="city" value="DHOLKA" />
+                    <?php */ ?>
                 @else
                     {{-- Main Member City --}}
                     <div class="form-group">

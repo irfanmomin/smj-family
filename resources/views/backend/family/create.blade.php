@@ -108,10 +108,18 @@
                     <div class="form-group">
                         {{ Form::label('city', trans('labels.backend.family.validation.city'), ['class' => 'col-lg-2 control-label required']) }}
                         <div class="col-lg-10">
+                            {!! Form::select('city', $cityList, null, ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required']) !!}
+                        </div><!--col-lg-10-->
+                    </div><!--form control-->
+                    <?php /* ?>
+                    <div class="form-group">
+                        {{ Form::label('city', trans('labels.backend.family.validation.city'), ['class' => 'col-lg-2 control-label required']) }}
+                        <div class="col-lg-10">
                             {!! Form::select('city', $cityList, null, ["class" => "form-control box-size", "data-column" => 2, 'required' => 'required', 'disabled' => 'disabled']) !!}
                         </div><!--col-lg-10-->
                     </div><!--form control-->
                     <input type="hidden" name="city" value="DHOLKA" />
+                    <?php */ ?>
                 @else
                     {{-- Main Member City --}}
                     <div class="form-group">
