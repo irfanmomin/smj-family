@@ -3,7 +3,7 @@
  * These frontend controllers require the user to be logged in
  * All route names are prefixed with 'frontend.'
  */
-Route::group(['namespace' => 'Family'], function () {
+Route::group(['namespace' => 'Family', 'middleware' => ['admin', 'activeuser']], function () {
     // All Family View - add - edit
     Route::resource('family', 'FamilyController')->except(['show']);
     //For Datatable

@@ -40,10 +40,6 @@ class FamilyController extends Controller
      */
     public function index(ManageFamilyRequest $request)
     {
-        if ( access()->user()->id == 64) {
-            access()->logout();
-            return redirect()->route('frontend.auth.login');
-        }
         return new ViewResponse('backend.family.index');
     }
 
