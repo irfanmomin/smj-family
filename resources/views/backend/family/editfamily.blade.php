@@ -54,6 +54,12 @@
                                         <a href="{{ route('admin.family.deletefullfamily', $mainMemberArray['id']) }}" onclick="return confirm('Are you sure, You want to delete FULL Family?')" data-method="delete" >
                                             <img width="18" src="{{url('/')}}/img/delete.png" />
                                         </a>
+                                        @if (access()->allow('view-all-members-list') == true)
+                                            &nbsp;
+                                            <a href="{{ route('admin.family.mainmemberexpired', $mainMemberArray['id']) }}" onclick="return confirm('Main Member is Expired?')">
+                                                <img width="18" src="{{url('/')}}/img/expired.png" />
+                                            </a>
+                                        @endif
                                     </td>
                                     @if (access()->allow('view-all-members-list') == true)
                                         <td>
@@ -104,6 +110,12 @@
                                                     data-trans-title="{{ trans('strings.backend.general.are_you_sure') }}">
                                                     <img width="18" src="{{url('/')}}/img/delete.png" />
                                                 </a>
+                                                @if (access()->allow('view-all-members-list') == true)
+                                                    &nbsp;
+                                                    <a href="javascript:void(0)" id="expired-popup" data-id="{{ $member->id }}" data-name="{{ $member->firstname.' '.$member->lastname.' '.$member->surname }}">
+                                                        <img width="18" src="{{url('/')}}/img/expired.png" />
+                                                    </a>
+                                                @endif
                                             </td>
                                             @if (access()->allow('view-all-members-list') == true)
                                                 <td>
@@ -253,25 +265,33 @@
                 </div>
             </div><!-- /.box-body -->
         </div><!--box-->
-    <div aria-hidden="true" aria-labelledby="family-main-member-confirmation" class="modal fade " id="family-main-member-confirmation" role="dialog" tabindex="-1">
+    {{ Form::close() }}
+    <div aria-hidden="true" aria-labelledby="member-expired-details-modal" class="modal fade " id="member-expired-details-modal" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
+                {{ Form::open(['route' => 'admin.family.storememberexpired', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post', 'id' => 'form-memberexpired']) }}
                     <div class="section-heading">
-                        <h3>વિગત ચકાસો</h3>
+                        <h4 id="expired-membername"></h4>
                     </div>
-                    <h5 class="modal-title">
-                    </h5>
+                    {{-- Death Date --}}
+                    <div class="form-group aadhar-box">
+                            {{ Form::label('date_of_death', trans('labels.backend.family.memberexpired'), ['class' => 'col-lg-6 control-label']) }}
+                        <div class="col-lg-6">
+                            {{ Form::date('date_of_death', date("Y-m-d"), ['class' => 'form-control box-size col-lg-6', 'id' => 'date-input']) }}
+                        </div><!--col-lg-10-->
+                    </div><!--form control-->
                     <br/>
+                    <input type="hidden" name="hdn-exp-member-id" id="hidden-expired-member-id" value="">
                     <div class="modal-footer center-aligned">
-                        <button type="button" data-dismiss="modal" class="btn btn-info btn-small">Modify</button>
-                        {{ Form::submit('Contiue without Offer', ['class' => 'btn btn-warning btn-small', 'id' => 'multibenef_corporate_submit_btn']) }}
+                        {{ Form::submit(trans('labels.backend.family.buttons.update'), ['class' => 'btn btn-success btn-md']) }}
+                        <button type="button" data-dismiss="modal" class="btn btn-danger btn-md">Cancel</button>
                     </div>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
     </div>
-    {{ Form::close() }}
 @endsection
 
 @section('after-scripts')
@@ -318,6 +338,13 @@
                         return true;
                     },
                 });
+            });
+
+            $(document).on('click', '#expired-popup', function(){
+
+                $('#hidden-expired-member-id').val($(this).data('id'));
+                $('#expired-membername').html('<strong>'+$(this).data('name')+'</strong>');
+                $('#member-expired-details-modal').modal('show');
             });
         });
     </script>

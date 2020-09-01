@@ -33,8 +33,23 @@ return [
 
     'backend' => [
         'allmembers' => [
-            'management' => 'All Members List',
-            'newmanagement' => 'SMJ Family',
+            'management'      => 'All Members List',
+            'newmanagement'   => 'SMJ Family',
+            'advance_search'  => 'Advanced Search FIlter',
+            'verified'        => 'Verified',
+            'unverified'      => 'Un-Verified',
+            'agelessthan'     => 'Age Less than',
+            'agegreaterthan'  => 'Age Greater than',
+            'male'            => 'Male',
+            'female'          => 'Female',
+            'onlymainmembers' => 'Only Main Members',
+            'expired'         => 'Expired Members',
+            'deleted'         => 'Deleted Members',
+            'agenumber'         => 'Age',
+            'age_on'         => 'On',
+            'verifiedstatus'         => 'Verified Status',
+            'gender'         => 'Gender',
+            'close'         => 'Close',
         ],
         'family' => [
             'management' => 'All Family View',
@@ -43,6 +58,9 @@ return [
             'new' => 'કુટુંબ ના મુખ્ય વ્યક્તિ ની વિગત',
             'edit' => 'Edit Member Details',
             'editfamily' => 'કુટુંબ ના સભ્યો ની વિગત',
+            'selectmainmember' => 'મુખ્ય વ્યક્તિ પસંદ કરો',
+            'mainmemberselect' => 'મુખ્ય વ્યક્તિ પસંદ કરો',
+            'memberexpired' => 'Select Date of Expired',
             'table' => [
                 'fullname' => 'Full Name',
                 'firstname' => 'Full Name',
@@ -80,6 +98,7 @@ return [
                 'doc_type' => 'ડોકયુમેંટ',
                 'education' => 'શિક્ષણ',
                 'occupation' => 'વ્યવસાય',
+                'date_of_death' => 'Date of Expired',
             ],
             'validationedit' => [
                 'surname' => 'અટક',
@@ -277,6 +296,7 @@ return [
             'footer'         => 'Footer Settings',
             'terms'          => 'Terms and Condition Settings',
             'google'         => 'Google Analytics Track Code',
+            'smj_settings'   => 'SMJ Settings',
         ],
 
         'faqs' => [

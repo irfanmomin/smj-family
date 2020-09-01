@@ -216,6 +216,10 @@ return [
                 'google' => [
                     'analytic' => 'Google Analytics',
                 ],
+                'smj_settings' => [
+                    'half_vc_age' => 'Half VC Age',
+                    'sadharan_age' => 'Sadharan Age'
+                ],
             ],
             'faqs' => [
                     'question' => 'Question',

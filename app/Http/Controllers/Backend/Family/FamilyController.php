@@ -14,6 +14,7 @@ use App\Http\Responses\ViewResponse;
 use App\Http\Responses\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Responses\Backend\Family\EditResponse;
+use Carbon\Carbon;
 
 /**
  * Class FamilyController.
@@ -341,5 +342,161 @@ class FamilyController extends Controller
         }
 
         return redirect()->back()->withInput()->withFlashWarning('You are not allowed to Verify / Unverify');
+    }
+
+    /**
+     * storeMemberExpired Store expired member date and delete it
+     * @param \App\Models\Family\Family                              $family
+     * @param \App\Http\Requests\Backend\Family\EditFamilyRequest $request
+     *
+     * @return \App\Http\Responses\Backend\Family\EditResponse
+     */
+    public function storeMemberExpired(EditFamilyRequest $request)
+    {
+        $validatedData = $request->validate([
+            "date_of_death"     => "required|date",
+            "hdn-exp-member-id" => "required|numeric"
+        ]);
+
+        $input = $request->except('_token');
+
+        if ( is_numeric($input['hdn-exp-member-id']) && !isMainMember($input['hdn-exp-member-id'])) {
+            $id = $input['hdn-exp-member-id'];
+            $dateOfExpired = $input['date_of_death'];
+
+            $expireMember = Family::findorfail($id);
+            $expireMember->expired_date = $dateOfExpired;
+            $expireMember->updated_at = Carbon::now();
+            $expireMember->updated_by = access()->user()->id;
+
+            $mainID = getMainMemberID($id);
+
+            if ($expireMember->save()) {
+                Family::destroy([$id]);
+            }
+
+            return new RedirectResponse(route('admin.family.editfamily', ['id' => $mainID]), ['flash_success' => trans('alerts.backend.family.recordupdated')]);
+        }
+
+        return redirect()->back()->withInput()->withFlashWarning('This member is a Main member, Could not delete this');
+    }
+
+
+
+    /**
+     * @param \App\Models\Family\Family                              $family
+     * @param \App\Http\Requests\Backend\Family\EditFamilyRequest $request
+     *
+     * @return \App\Http\Responses\Backend\Family\EditResponse
+     */
+    public function mainMemberExpired($id)
+    {
+        if (isMainMember($id)) {
+
+            $childIDs = getChildMemberIDs($id);
+
+            if (count($childIDs) <= 0) {
+                $expireMainMember = Family::findorfail($id);
+                $expireMainMember->expired_date = Carbon::now();
+                $expireMainMember->updated_at   = Carbon::now();
+                $expireMainMember->updated_by   = access()->user()->id;
+                $expireMainMember->save();
+
+                Family::destroy([$id]);
+
+                return new RedirectResponse(route('admin.family.index'), ['flash_success' => 'Record Updated Successfully']);
+            }
+
+            $mainMemberArray = Family::findorfail($id);
+            $childMembersArray = getChildMembersDetails($id);
+
+            return view('backend.family.selectmainmember')
+                ->with('mainMemberArray', $mainMemberArray)
+                ->with('childMembersArray', $childMembersArray);
+        }
+
+        return redirect()->back()->withInput()->withFlashWarning('This member is not a Main member');
+    }
+
+    /**
+     * Store new Relation / Main member And Delete the expired member
+     * @param \App\Http\Requests\Backend\Family\storeNewRelationAndDelete $request
+     *
+     * @return \App\Http\Responses\RedirectResponse
+     */
+    public function storeNewRelationAndDelete(EditFamilyRequest $request)
+    {
+        $input = $request->except('_token');
+
+        $validatedData = $request->validate([
+            'newmainmember' => 'required',
+            'expiredmember' => 'required',
+            'date_of_death' => 'required',
+            'mobile'        => 'required',
+        ]);
+
+        $numberUpdated = false;
+
+        // Set expired date today for member
+        if ($input['expiredmember'] != NULL && is_numeric($input['expiredmember'])) {
+            $expireMainMember = Family::findorfail($input['expiredmember']);
+            $expireMainMember->expired_date = $input['date_of_death'];
+            $expireMainMember->updated_at   = Carbon::now();
+            $expireMainMember->updated_by   = access()->user()->id;
+
+            // Assign new Main member
+            if ($expireMainMember->save()) {
+                $newMainMember = Family::findorfail($input['newmainmember']);
+                $newMainMember->is_main   = 1;
+                $newMainMember->family_id = null;
+                $mainMemberOldMobile      = $expireMainMember->mobile;
+
+                if ( $input['mobile'] != $mainMemberOldMobile ) {
+                    $numberUpdated = true;
+                    $newMainMember->mobile = $input['mobile'];
+                }
+
+                $newMainMember->relation   = 'Self';
+                $newMainMember->updated_at = Carbon::now();
+                $newMainMember->updated_by = access()->user()->id;
+
+                // Save and set expired member as deleted
+                if ($newMainMember->save()) {
+                    $expireMainMember->family_id = $input['newmainmember'];
+                    $expireMainMember->save();
+                    Family::destroy([$input['expiredmember']]);
+                } else {
+                    return redirect()->back()->withInput()->withFlashWarning('Something went Wrong! Couldn\'t save new member.');
+                }
+            }
+        }
+
+        $RelationsArray = $request->except('_token', 'expiredmember', 'newmainmember');
+
+        // Set Child Members Relation and set Family Main member
+        foreach ($RelationsArray as $key => $relation) {
+            if (strpos($key, 'relation_') !== false) {
+                $idAndLabel = explode("_", $key);
+
+                if ( is_numeric($idAndLabel[1]) && $relation != NULL ) {
+                    $childMembers = Family::findorfail($idAndLabel[1]);
+                    $childMembers->relation = $relation;
+
+                    // Only if Expired member's mobile number is stored
+                    if ($numberUpdated && $mainMemberOldMobile == $childMembers->mobile) {
+                        $childMembers->mobile = $input['mobile'];
+                    }
+
+                    $childMembers->updated_at = Carbon::now();
+                    $childMembers->family_id  = $input['newmainmember'];
+                    $childMembers->updated_by = access()->user()->id;
+                    $childMembers->save();
+                }
+            }
+        }
+
+        // Return to main page with Updated Details
+        return new RedirectResponse(route('admin.family.editfamily', ['id' => $input['newmainmember']]), ['flash_success' => trans('alerts.backend.family.newmemberassigned')]);
+
     }
 }

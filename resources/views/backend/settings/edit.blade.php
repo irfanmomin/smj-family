@@ -21,6 +21,7 @@
 	<div class="box-body setting-block">
 		<!-- Nav tabs -->
 		<ul id="myTab" class="nav nav-tabs setting-tab-list" role="tablist">
+		<?php /* ?>
 			<li role="presentation" class="active">
 				<a href="#tab1" aria-controls="home" role="tab" data-toggle="tab">{{ trans('labels.backend.settings.seo') }}</a>
 			</li>
@@ -39,10 +40,15 @@
 			<li role="presentation">
 				<a href="#tab6" aria-controls="5" role="tab" data-toggle="tab">{{ trans('labels.backend.settings.google') }}</a>
 			</li>
+			<?php */ ?>
+			<li role="presentation" class="active">
+				<a href="#tab7" aria-controls="6" role="tab" data-toggle="tab">{{ trans('labels.backend.settings.smj_settings') }}</a>
+			</li>
 		</ul>
 
 		<!-- Tab panes -->
 		<div id="myTabContent" class="tab-content setting-tab">
+			<?php /* ?>
 			<div role="tabpanel" class="tab-pane active" id="tab1">
 				<div class="form-group">
 					{{ Form::label('logo', trans('validation.attributes.backend.settings.sitelogo'), ['class' => 'col-lg-2 control-label']) }}
@@ -218,6 +224,28 @@
 					<div class="col-lg-10">
 						{{ Form::textarea('google_analytics', null,['class' => 'form-control', 'placeholder' => trans('validation.attributes.backend.settings.google.analytic')])
 						}}
+					</div>
+				</div>
+				<!--form control-->
+			</div>
+			<?php */ ?>
+			<div role="tabpanel" class="tab-pane active" id="tab7">
+				<div class="form-group">
+					{{ Form::label('half_vc_age', trans('validation.attributes.backend.settings.smj_settings.half_vc_age'), ['class' => 'col-lg-2 control-label'])
+					}}
+
+					<div class="col-lg-10">
+						{{ Form::number('half_vc_age', null,['class' => 'form-control', 'pattern' => '^\s*-?[0-9]\s*$', 'placeholder' => trans('validation.attributes.backend.settings.smj_settings.half_vc_age'),
+						'rows' => 2]) }}
+					</div>
+				</div>
+				<div class="form-group">
+					{{ Form::label('sadharan_age', trans('validation.attributes.backend.settings.smj_settings.sadharan_age'), ['class' => 'col-lg-2 control-label'])
+					}}
+
+					<div class="col-lg-10">
+						{{ Form::number('sadharan_age', null,['class' => 'form-control', 'pattern' => '^\s*-?[0-9]\s*$', 'placeholder' => trans('validation.attributes.backend.settings.smj_settings.sadharan_age'),
+						'rows' => 2]) }}
 					</div>
 				</div>
 				<!--form control-->

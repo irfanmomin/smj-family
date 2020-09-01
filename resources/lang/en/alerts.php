@@ -21,6 +21,8 @@ return [
             'inserted' => 'Member added Successfully!',
             'deleted' => 'Family has been Deleted Successfully',
             'deletedmember' => 'Member has been Deleted Successfully',
+            'newmemberassigned' => 'New Member assigned Successfully!',
+            'recordupdated' => 'Record updated Successfully!',
         ],
         'roles' => [
             'created' => 'The role was successfully created.',

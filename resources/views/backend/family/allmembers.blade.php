@@ -10,7 +10,6 @@
     <div class="box box-info">
         <div class="box-header with-border">
             <h3 class="box-title">{{ trans('labels.backend.allmembers.management') }}</h3>
-
             <div class="box-tools pull-right">
                 @include('backend.family.partials.allmembers-header-buttons')
             </div>
@@ -18,6 +17,7 @@
 
         <div class="box-body">
             <div class="table-responsive data-table-wrapper">
+                <div class="toolbar"></div>
                 <table id="allmembers-table" class="table table-condensed table-hover table-bordered responsive">
                     <thead>
                         <tr>
@@ -39,6 +39,171 @@
                     </thead>
                 </table>
             </div><!--table-responsive-->
+            <!-- Advanced FILTERS -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" data-dismiss="modal" type="button">
+                                ×
+                            </button>
+                            <h4 class="modal-title">
+                                {{ trans('labels.backend.allmembers.advance_search') }}
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                        <!-- 'verified'        => 'Verified',
+                        'unverified'      => 'Un-Verified',
+                        'agelessthan'     => 'Age Less than',
+                        'agegreaterthan'  => 'Age Greater than',
+                        'male'            => 'Male',
+                        'female'          => 'Female',
+                        'onlymainmembers' => 'Only Main Members',
+                        'expired'         => 'Expired Members',
+                        'deleted'         => 'Deleted Members', -->
+                            {{ Form::open(['route' => 'admin.allmembers.get', 'class' => 'form-horizontal', 'method' => 'post', 'id' => 'allmembers_advance_search','autocomplete'=>'off']) }}
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <div class="col-md-2 mb-2">
+                                        {{ Form::label('agelessthan', trans('labels.backend.allmembers.agelessthan'), []) }}
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        {{ Form::text('agelessthan', null, ['class' => 'form-control','id'=>'agelessthan', 'placeholder' => trans('labels.backend.allmembers.agelessthan')]) }}
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        {{ Form::label('agegreaterthan', trans('labels.backend.allmembers.agegreaterthan'), []) }}
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        {{ Form::text('agegreaterthan', null, ['class' => 'form-control','id'=>'agegreaterthan', 'placeholder' => trans('labels.backend.allmembers.agegreaterthan')]) }}
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <div class="col-md-2 mb-3">
+                                        {{ Form::label('agenumber', trans('labels.backend.allmembers.agenumber'), []) }}
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        {{ Form::text('agenumber', null, ['class' => 'form-control','id'=>'agenumber', 'placeholder' => trans('labels.backend.allmembers.agenumber')]) }}
+                                    </div>
+                                    <div class="col-md-1 mb-3">
+                                        At
+                                    </div>
+                                    <div class="col-md-7 mb-3">
+                                        {{ Form::text('age_on', null, ['class' => 'nulldatepicker form-control','id'=>'age_on', 'placeholder' => trans('labels.backend.allmembers.age_on')]) }}
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+
+                            <div class="form-group">
+                                {{ Form::label('verifiedstatus', trans('labels.backend.allmembers.verifiedstatus'), ['class' => 'col-lg-2']) }}
+                                <div class="col-lg-6">
+                                    <div class="control-group">
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('verifiedstatus', 'verified', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.verified') }}
+                                        </label>
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('verifiedstatus', 'unverified', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.unverified') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+
+                            <div class="form-group">
+                                {{ Form::label('gender', trans('labels.backend.allmembers.gender'), ['class' => 'col-lg-2']) }}
+                                <div class="col-lg-6">
+                                    <div class="control-group">
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('gender', 'male', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.male') }}
+                                        </label>
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('gender', 'female', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.female') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+
+                            <div class="form-group">
+                                {{ Form::label('onlymainmembers', trans('labels.backend.allmembers.onlymainmembers'), ['class' => 'col-lg-2']) }}
+                                <div class="col-lg-6">
+                                    <div class="control-group">
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('onlymainmembers', 'onlymainmembers', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.onlymainmembers') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+
+                            <div class="form-group">
+                                {{ Form::label('expired', trans('labels.backend.allmembers.expired'), ['class' => 'col-lg-2']) }}
+                                <div class="col-lg-6">
+                                    <div class="control-group">
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('expired', 'expired', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.expired') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+
+                            <div class="form-group">
+                                {{ Form::label('deleted', trans('labels.backend.allmembers.deleted'), ['class' => 'col-lg-2']) }}
+                                <div class="col-lg-6">
+                                    <div class="control-group">
+                                        <label class="control control--checkbox">
+                                            {{ Form::checkbox('deleted', 'deleted', false) }}
+                                            <div class="control__indicator">
+                                            </div>
+                                            {{ trans('labels.backend.allmembers.deleted') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--col-lg-3-->
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-9">
+                                </div>
+                                <div class="col-lg-3 text-right">
+                                <button class="btn btn-default" data-dismiss="modal" type="button">
+                                {{ trans('labels.backend.allmembers.close') }}
+                            </button>
+                                    {{ Form::submit('Search', ['class' => 'btn btn-primary btn-md']) }}
+                                </div>
+                            </div>
+                            {{ Form::close() }}
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Advanced Filters -->
         </div><!-- /.box-body -->
     </div><!--box-->
 @endsection
@@ -48,15 +213,18 @@
     {{ Html::script(mix('js/dataTable.js')) }}
 
     <script>
-        //Below written line is short form of writing $(document).ready(function() { })
-        $(document).ready(function() {
+        function generateDataTable(param = {}) {
             var dataTable = $('#allmembers-table').dataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
+                pageLength: 10,
+                'destroy': true,
+                'autoWidth': false,
                 ajax: {
                     url: '{{ route("admin.allmembers.get") }}',
-                    type: 'post'
+                    type: 'post',
+                    data: param
                 },
                 columns: [
                     {data: 'fullname', name: 'fullname'},
@@ -96,7 +264,84 @@
                 }
             });
 
+            $("div.toolbar").html('<a id="advance_search_remove" style="display:none;"><i data-toggle="tooltip" data-placement="top" title="View" class="fa fa-close"></i></a><a id="advance_search" style="float:right;margin: 4px 5px;cursor: pointer;" data-toggle="modal" data-target="#myModal">Advance Search</a>');
+            $('#allmembers-table_filter').css('display', 'none');
+            $('#allmembers-table_filter').hide();
             Backend.DataTableSearch.init(dataTable);
+
+            $(document).on('click', '#advance_search_remove', function(e) {
+                e.preventDefault();
+                $('#csvButton, .csvButton').unbind().click();
+                $('#pdfButton, .pdfButton').unbind().click();
+                generateDataTable({formData: []});
+                $('#advance_search').removeClass('btn label-success');
+                $('#advance_search_remove').removeClass('remove-advance_search');
+                $('#allmembers_advance_search')[0].reset();
+                $('#approved_by_system, #approved_by_manual').prop("checked", false);
+                $('#approved_by_system, #approved_by_manual').attr('onclick',"return false;");
+            });
+        }
+
+        $(function() {
+            $('#allmembers-table_filter').hide();
+
+            $(document).on('click', '#advance_search_remove', function(e) {
+                e.preventDefault();
+                $('#csvButton, .csvButton').unbind().click();
+                $('#pdfButton, .pdfButton').unbind().click();
+                generateDataTable({formData: []});
+                $('.transparent-bg input').val('');
+                $('#advance_search').removeClass('btn label-success');
+                $('#advance_search_remove').removeClass('remove-advance_search');
+                $('#allmembers_advance_search')[0].reset();
+                $('#approved_by_system, #approved_by_manual').prop("checked", false);
+                $('#approved_by_system, #approved_by_manual').attr('onclick',"return false;");
+            });
+
+            $(".nulldatepicker").dateDropdowns({
+                defaultDate: null,
+                defaultDateFormat:"dd-mm-yyyy",
+                submitFormat: "dd-mm-yyyy",
+                monthFormat: "short",
+                daySuffixes: false,
+            });
+
+            generateDataTable({formData: []});
+
+            $('#refresh').on( 'click', function (e) {
+                $('#allmembers-table').DataTable().ajax.reload(null, false);
+            });
+
+            $('.date-dropdowns select.day, .date-dropdowns select.month, .date-dropdowns select.year').addClass('custom-date-dropdown form-control');
+
+            $('#allmembers_advance_search').on('submit', function(e) {
+                e.preventDefault();
+                setTimeout(() => {
+                    var formData = $('#allmembers_advance_search').serializeArray();
+                    generateDataTable({formData: formData});
+                    $('#myModal').modal('hide');
+                    $('#advance_search').addClass('btn label-success');
+                    $('#export-buttons').removeClass('hide');
+                    $('.transparent-bg input').val('');
+                    $('#advance_search_remove').addClass('remove-advance_search');
+                    $('.preset-filter-dp').addClass('btn-primary');
+                    $('.preset-filter-dp').removeClass('btn-warning');
+                    $('#filterId').text('Filter');
+                }, 1000);
+            });
+
+            /* $('#allmembers_advance_search').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $('#allmembers_advance_search').serializeArray();
+                console.log(formData);
+                generateDataTable({formData: formData});
+            }); */
+
+            /* $('#verify-select').on('change', function() {
+                var $form = $(this).closest('form');
+                $form.find('input[type=submit]').click();
+            }); */
         });
+
     </script>
 @endsection

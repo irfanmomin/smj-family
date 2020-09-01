@@ -104,8 +104,17 @@ class FamilyRepository extends BaseRepository
     /**
      * @return mixed
      */
-    public function getForAllMembersListDataTable()
+    public function getForAllMembersListDataTable($request = null)
     {
+        $formData = NULL;
+        $approveTypeFlg = 0;
+
+        if (!is_null($request)) {
+            $formData = $request->get('formData');
+        }
+
+        $columns = $request->request->get('columns');
+
         $query =  $this->query()
             ->leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.family").'.created_by')
             ->select([
@@ -124,6 +133,34 @@ class FamilyRepository extends BaseRepository
                 config('smj.tables.family').'.is_verified',
                 config('smj.tables.family').'.created_at',
             ]);
+
+        // If any Custom filter is applid
+        if (! is_null($formData) && count($formData) > 0) {
+            $arrRequest = [];
+
+            // Make Structured Filters Data
+            foreach ($formData as $data) {
+                if ( $data['name'] == 'verifiedstatus' ) {
+                    $arrRequest[$data['name']] = $data['value'];
+                }
+            }
+
+            if (
+                count($arrRequest) > 0 &&
+                isset($arrRequest['verifiedstatus']) &&
+                !empty($arrRequest['verifiedstatus']) &&
+                ($arrRequest['verifiedstatus'] == 'verified' || $arrRequest['verifiedstatus'] == 'unverified')
+            ) {
+                // Verified Non verified Filter
+                if ($arrRequest['verifiedstatus'] == 'verified') {
+                    $query = $query->where(config('smj.tables.family').'.is_verified', 1);
+                } else if ($arrRequest['verifiedstatus'] == 'unverified') {
+                    $query = $query->where(config('smj.tables.family').'.is_verified', 0);
+                }
+            } else {
+                return $query;
+            }
+        }
 
         return $query;
     }

@@ -22,6 +22,18 @@ Route::group(['namespace' => 'Family', 'middleware' => ['admin', 'activeuser']],
 
     // Delete Full Family Route
     Route::any('family/deletefullfamily/{id}', 'FamilyController@deleteFullFamily')->name('family.deletefullfamily');
+
+    // Verify Family Member
     Route::any('family/verifymember/{id}', 'FamilyController@verifyMember')->name('family.verifymember');
+
+    // Un-Verify Family Member
     Route::any('family/unverifymember/{id}', 'FamilyController@unVerifyMember')->name('family.unverifymember');
+
+    // Main Member Expired Route
+    Route::get('family/mainmemberexpired/{id}', 'FamilyController@mainMemberExpired')->name('family.mainmemberexpired');
+
+    Route::post('family/mainmemberexpired/storenewrelation', 'FamilyController@storeNewRelationAndDelete')->name('family.storenewrelation');
+
+    // Member Expired Route
+    Route::post('family/mainmemberexpired/storememberexpired', 'FamilyController@storeMemberExpired')->name('family.storememberexpired');
 });
