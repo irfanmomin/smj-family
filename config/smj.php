@@ -2,8 +2,14 @@
 
 return [
     'tables' => [
-        'family'  => 'members',
-        'areacity' => 'area_city',
+        'family'            => 'members',
+        'areacity'          => 'area_city',
+        'eventssubcategory' => 'smj_event_subcategory',
+        'eventscategory'    => 'smj_event_category',
+        'eventsgroup'       => 'smj_event_group',
+        'maintranstable'    => 'smj_main_trans',
+        'transtable'        => 'smj_transactions',
+        'pendingamount'     => 'smj_members_pending_amount',
     ],
     'surname' => [
         'BARHAZAR' => 'BARHAZAR',

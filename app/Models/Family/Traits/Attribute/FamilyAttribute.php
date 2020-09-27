@@ -22,6 +22,31 @@ trait FamilyAttribute
     /**
      * @return string
      */
+    public function getActionButtonsMembersAttribute()
+    {
+        return '<div class="btn-group action-btn">'.
+                $this->getViewFamilyButtonAttribute('edit-family', 'admin.family.editfamily').
+                $this->getEditButtonAttribute('edit-family', 'admin.family.edit').
+                $this->getDeleteButtonAttribute('delete-family', 'admin.family.deletefullfamily').
+                $this->getCreditModalButtonAttribute('manage-main-trans', 'admin.family.deletefullfamily').
+                '</div>';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreditModalButtonAttribute($permission, $route)
+    {
+        if (access()->allow($permission) && transactionExist($this->id) > 0) {
+            return '<a class="btn btn-success btn-flat btn-credit-payment-modal btn-mem-'.$this->id.'" href="'.route('admin.family.addpaymentmodal', $this).'" data-toggle="modal" data-target="#convertedInfoModal"><i data-toggle="tooltip" data-placement="top" title="Add Payment" class="fa fa-money"></i></a>';
+        }
+    }
+
+
+
+    /**
+     * @return string
+     */
     public function getViewFamilyButtonAttribute($permission, $route)
     {
         if (access()->allow($permission)) {

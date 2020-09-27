@@ -34,6 +34,9 @@ class AllMembersTableController extends Controller
             ->filterColumn('fullname', function($query, $keyword) {
                 $query->whereRaw("firstname like ?", ["%$keyword%"])->orWhereRaw("lastname like ?", ["%$keyword%"])->orWhereRaw("surname like ?", ["%$keyword%"]);
             })
+            ->filterColumn('pending_amount', function($query, $keyword) {
+                $query->whereRaw("smj_members_pending_amount.pending_amount like ?", ["%$keyword%"]);
+            })
             ->filterColumn('areacity', function($query, $keyword) {
                 $query->whereRaw("area like ?", ["%$keyword%"])->orWhereRaw("city like ?", ["%$keyword%"]);
             })
@@ -55,6 +58,11 @@ class AllMembersTableController extends Controller
                     return '-';
                 }
             })
+            ->addColumn('pending_amount', function ($family) {
+                if (!is_null($family->pending_amount)) {
+                    return '<h4><span class="label label-warning">&#x20B9; '.$family->pending_amount.'</span></h4>';
+                }
+            })
             ->addColumn('is_verified', function ($family) {
                 if ($family->is_verified == 1) {
                     return '';
@@ -65,8 +73,12 @@ class AllMembersTableController extends Controller
                 }
             })
             ->addColumn('actions', function ($family) {
-                return $family->action_buttons;
+                return $family->action_buttons_members;
             })
+            /* ->rawColumns(['action_addamount'])
+            ->editColumn('action_addamount', function ($maintrans) {
+                return '<a class="btn btn-success btn-flat btn-credit-payment-modal" href="'.route('admin.family.addpaymentmodal', $this).'" data-toggle="modal" data-target="#convertedInfoModal"><i data-toggle="tooltip" data-placement="top" title="Add Payment" class="fa fa-money"></i></a>';
+            }) */
             ->make(true);
     }
 }

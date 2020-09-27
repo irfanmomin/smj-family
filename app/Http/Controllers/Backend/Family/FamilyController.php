@@ -8,6 +8,7 @@ use App\Repositories\Backend\Family\FamilyRepository;
 use App\Http\Requests\Backend\Family\ManageFamilyRequest;
 use App\Http\Requests\Backend\Family\CreateFamilyRequest;
 use App\Http\Requests\Backend\Family\ManageMembersListRequest;
+use App\Http\Requests\Backend\Events\ManageMainTransactionRequest;
 use App\Http\Requests\Backend\Family\EditFamilyRequest;
 use App\Http\Requests\Backend\Family\DeleteFamilyRequest;
 use App\Http\Responses\ViewResponse;
@@ -498,5 +499,18 @@ class FamilyController extends Controller
         // Return to main page with Updated Details
         return new RedirectResponse(route('admin.family.editfamily', ['id' => $input['newmainmember']]), ['flash_success' => trans('alerts.backend.family.newmemberassigned')]);
 
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  App\Http\Requests\Backend\Upload\ManageMainTransactionRequest  $request
+     * @return \App\Http\Responses\ViewResponse
+     */
+    public function creditPaymentModal($memberID, ManageMainTransactionRequest $request)
+    {
+        $data = $this->family->getTransModalDetails($memberID);
+
+        return new ViewResponse('backend.events.eventmaintransactions.credit_amount_modal', compact('data'));
     }
 }

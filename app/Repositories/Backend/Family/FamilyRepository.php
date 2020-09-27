@@ -7,6 +7,8 @@ use App\Models\Family\Family;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use DB;
+use App\Models\Events\Transaction;
+use App\Models\Events\PendingAmount;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -117,12 +119,14 @@ class FamilyRepository extends BaseRepository
 
         $query =  $this->query()
             ->leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.family").'.created_by')
+            ->leftjoin(config('smj.tables.pendingamount'), config('smj.tables.pendingamount').'.member_id', '=', config("smj.tables.family").'.id')
             ->select([
                 DB::raw('CONCAT('.config("smj.tables.family").'.firstname, " ", '.config("smj.tables.family").'.lastname, " ", '.config("smj.tables.family").'.surname) AS fullname'),
                 DB::raw('CONCAT('.config("smj.tables.family").'.area, " / ", '.config("smj.tables.family").'.city) AS areacity'),
                 DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
                 config('smj.tables.family').'.id',
                 config('smj.tables.family').'.family_id',
+                config('smj.tables.pendingamount').'.pending_amount',
                 config('smj.tables.family').'.firstname',
                 config('smj.tables.family').'.lastname',
                 config('smj.tables.family').'.surname',
@@ -353,5 +357,26 @@ class FamilyRepository extends BaseRepository
         $fileName = $model->featured_image;
 
         return $this->storage->delete($this->upload_path.$fileName);
+    }
+
+    /**
+     * getTransModalDetails.
+     *
+     * @param int $id
+     */
+    public function getTransModalDetails($memberID)
+    {
+        $memberDetails = Family::where('id', $memberID)->get()->first();
+        $finalArray = [];
+
+        if (!is_null($memberDetails)) {
+            $transHistoryArray = getTransHistoryUsingMemberID($memberID);
+            $memberPendingAmount = PendingAmount::where('member_id', $memberID)->value('pending_amount');
+
+            $finalArray['transaction_history_array'] = $transHistoryArray;
+            $finalArray['total_pending_amount']      = $memberPendingAmount;
+        }
+
+        return $finalArray;
     }
 }

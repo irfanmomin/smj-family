@@ -36,4 +36,37 @@ Route::group(['namespace' => 'Family', 'middleware' => ['admin', 'activeuser']],
 
     // Member Expired Route
     Route::post('family/mainmemberexpired/storememberexpired', 'FamilyController@storeMemberExpired')->name('family.storememberexpired');
+
+    Route::get('family/creditpaymentmodal/{memberid}', 'FamilyController@creditPaymentModal')->name('family.addpaymentmodal');
+});
+
+Route::group(['namespace' => 'Events', 'middleware' => ['admin', 'activeuser']], function () {
+    // Event Sub Categories - add - edit
+    Route::resource('events/subcategories', 'CategoriesController',[
+        'names' => 'eventsubcategories'
+    ])->except(['show']);
+
+    // Event Categories Routes
+    Route::post('subcategoriesmanagement/get', 'CategoriesTableController')->name('subcategoriesmanagement.get');
+
+    // Event Main Transaction - add - edit
+    Route::resource('events/maintransactions', 'MainTransactionController',[
+        'names' => 'maintransactions'
+    ])->except(['show']);
+
+    // Event Categories Routes
+    Route::post('maintransactions/get', 'MainTransactionTableController')->name('maintransactions.get');
+
+    // Get Area List route from City Route
+    Route::get('maintransactions/getsubcategories', 'MainTransactionController@getSubCategoryList')->name('maintransactions.getsubcategorylist');
+
+    Route::get('maintransactions/childtranslist/{id}', 'MainTransactionController@showChildTrans')->name('maintransactions.showchildtranslist');
+
+    // Event Categories Routes
+    Route::post('maintransactions/childtranslist/get', 'ChildTransactionListTableController')->name('childtranslist.get');
+
+    // Delete Full Family Route
+    Route::any('childtranslist/delete/{id}', 'MainTransactionController@deleteChildTransaction')->name('childtranslist.deletetrans');
+
+    Route::any('childtranslist/creditpayment', 'MainTransactionController@creditPayment')->name('childtransactions.creditamount');
 });

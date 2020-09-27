@@ -18,6 +18,17 @@ return [
             'all' => 'All Family View',
             'create' => 'Add New Family'
         ],
+        'events-categories' => [
+            'all' => 'All Event Subcategories',
+            'create' => 'New Sub category'
+        ],
+        'eventmaintrans' => [
+            'all' => 'Main Transactions',
+            'create' => 'New Main Transaction'
+        ],
+        'childtranslist' => [
+            'create' => 'Add Member'
+        ],
         'access' => [
             'title'  => 'Access Management',
             'export' => 'Export',

@@ -24,6 +24,19 @@ return [
             'newmemberassigned' => 'New Member assigned Successfully!',
             'recordupdated' => 'Record updated Successfully!',
         ],
+        'events' => [
+            'inserted' => 'Sub category Created Successfully',
+            'updated' => 'Sub category Updated Successfully',
+            'deleted' => 'Sub category Deleted Successfully'
+        ],
+        'eventmaintrans' => [
+            'inserted' => 'Main Tranasction Created Successfully',
+            'updated' => 'Main Tranasction Updated Successfully',
+            'deleted' => 'Main Tranasction Deleted Successfully'
+        ],
+        'transaction' => [
+            'credited' => 'Amount Successfully Credited.'
+        ],
         'roles' => [
             'created' => 'The role was successfully created.',
             'deleted' => 'The role was successfully deleted.',

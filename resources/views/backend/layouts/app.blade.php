@@ -26,6 +26,7 @@
         @endlangrtl
 
         {{ Html::style(mix('css/backend-custom.css')) }}
+        {{ Html::style('css/bootstrap-selectpicker.css') }}
         @yield('after-styles')
 
         <!-- Html5 Shim and Respond.js IE8 support of Html5 elements and media queries -->
@@ -83,5 +84,6 @@
         {!! Html::script('js/jquery.date-dropdowns.js') !!}
         @yield('extra-scripts')
         {!! Html::script('smj/js/front-user.js') !!}
+        {!! Html::script('js/bootstrap-selectpicker.js') !!}
     </body>
 </html>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSmjSettings extends Migration
+class AddFieldReliefException extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AddSmjSettings extends Migration
      */
     public function up()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->tinyInteger('half_vc_age')->nullable();
-            $table->tinyInteger('sadharan_age')->nullable();
-            $table->tinyInteger('relief_amount')->nullable();
+        Schema::table('members', function (Blueprint $table) {
+            $table->tinyInteger('is_relief_exception')->default(0)->comment('1: Relief Exception');
         });
     }
 

@@ -16,6 +16,11 @@
         </div><!--box-header with-border-->
 
         <div class="box-body">
+            <div class="modal fade" id="convertedInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content"></div>
+                </div>
+            </div>
             <div class="table-responsive data-table-wrapper">
                 <div class="toolbar"></div>
                 <table id="allmembers-table" class="table table-condensed table-hover table-bordered responsive">
@@ -26,6 +31,8 @@
                             <th>{{ trans('labels.backend.family.table.areacity') }}</th>
                             <th>{{ trans('labels.backend.family.table.area') }}</th>
                             <th>{{ trans('labels.backend.family.table.is_verified') }}</th>
+                            <th>{{ trans('labels.backend.family.table.is_main') }}</th>
+                            <th>{{ trans('labels.backend.family.table.pending_amount') }}</th>
                             <th>{{ trans('labels.general.actions') }}</th>
                         </tr>
                     </thead>
@@ -34,6 +41,8 @@
                             <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
                             <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.family.table.areacity')]) !!}</th>
                             <th>{!! Form::text('is_verified', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.is_main_ph')]) !!}</th>
+                            <th>{!! Form::text('is_main', null, ["class" => "search-input-text form-control", "data-column" => 5, "placeholder" => trans('labels.backend.family.table.is_main_ph')]) !!}</th>
+                            <th>{!! Form::text('pending_amount', null, ["class" => "search-input-text form-control", "data-column" => 6, "placeholder" => trans('labels.backend.family.table.pending_amount')]) !!}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -232,6 +241,8 @@
                     {data: 'areacity', name: 'areacity'},
                     {data: 'area', name: '{{config('smj.tables.family')}}.area'},
                     {data: 'is_verified', name: '{{config('smj.tables.family')}}.is_verified'},
+                    {data: 'is_main', name: '{{config('smj.tables.family')}}.is_main'},
+                    {data: 'pending_amount', name: 'pending_amount'},
                     {data: 'actions', name: 'actions', searchable: false, sortable: false},
                 ],
                 order: [[0, "asc"]],
@@ -255,11 +266,11 @@
                 dom: 'lBfrtip',
                 buttons: {
                     buttons: [
-                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 0,2]  }},
-                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 0,2 ]  }},
-                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 0,2 ]  }},
-                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 0,2 ]  }},
-                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 0,2 ]  }}
+                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 0,2,6]  }},
+                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 0,2,6 ]  }},
+                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 0,2,6 ]  }},
+                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 0,2,6 ]  }},
+                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 0,2,6 ]  }}
                     ]
                 }
             });
@@ -341,6 +352,19 @@
                 var $form = $(this).closest('form');
                 $form.find('input[type=submit]').click();
             }); */
+
+            jQuery(document).on("click", ".btn-credit-payment-modal", function(ev){
+                ev.preventDefault();
+                var target = jQuery(this).attr("href");
+
+                // load the url and show modal on success
+                jQuery("#convertedInfoModal .modal-content").load(target, function() {
+                    jQuery("#convertedInfoModal").modal("show");
+                });
+            });
+            jQuery(".modal").on("hidden.bs.modal", function(){
+            jQuery("#convertedInfoModal .modal-content").html("");
+            });
         });
 
     </script>

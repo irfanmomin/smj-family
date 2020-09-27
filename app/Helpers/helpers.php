@@ -3,6 +3,11 @@
 use App\Helpers\uuid;
 use App\Models\Notification\Notification;
 use App\Models\Settings\Setting;
+use App\Models\Events\Category;
+use App\Models\Events\SubCategory;
+use App\Models\Events\EventGroups;
+use App\Models\Events\Transaction;
+use App\Models\Events\PendingAmount;
 use App\Models\Family\AreaCity;
 use App\Models\Family\Family;
 use Carbon\Carbon as Carbon;
@@ -500,5 +505,300 @@ if (!function_exists('getMainMemberID')) {
         } catch (Exception $ex) {
             return false;
         }
+    }
+}
+
+if (!function_exists('getMainEventCategoriesList')) {
+
+    /**
+     * @return bool
+     */
+    function getMainEventCategoriesList()
+    {
+        try {
+            $eventCategories = Category::orderBy('id', 'asc')->pluck('category_name', 'id')->toArray();
+
+            if (count($eventCategories) > 0)
+                return $eventCategories;
+
+            return [];
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getEventGroupsList')) {
+
+    /**
+     * @return bool
+     */
+    function getEventGroupsList()
+    {
+        try {
+            $eventGroups = EventGroups::orderBy('id', 'asc')->pluck('event_group_name', 'id')->toArray();
+
+            if (count($eventGroups) > 0)
+                return $eventGroups;
+
+            return [];
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('getsubCategoryList')) {
+
+    /**
+     * @return bool
+     */
+    function getsubCategoryList($categoryID = null)
+    {
+        try {
+            if ($categoryID == null) {
+                return [];
+            }
+
+            $subCategoryList = SubCategory::where('category_id', $categoryID)->leftjoin('smj_event_group', 'smj_event_group.id', 'smj_event_subcategory.event_group_id')->select('smj_event_subcategory.*', 'smj_event_group.event_group_name')->get()->toArray();
+
+            if (count($subCategoryList) > 0)
+                return $subCategoryList;
+
+            return [];
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('debitForAllCorrespondentMembers')) {
+
+    /**
+     * @return bool
+     */
+    function debitForAllCorrespondentMembers($eventGroupID, $debitAmount, $mainTransactionID, $note)
+    {
+        try {
+            if ($eventGroupID > 0 && $debitAmount != '' && $mainTransactionID > 0) {
+                switch ($eventGroupID) {
+                    case 1: // Family wise (Dholka)
+                        $memberIDs = Family::where('is_main' , 1)->whereNull('family_id')->where('city', 'LIKE', '%DHOLKA%')->where('is_relief_exception' , 0)->groupBy('id')->pluck('id')->toArray();
+                        break;
+                    case 2:// Family wise (All City)
+                        # code...
+                        break;
+                    case 3:// All Members (Dholka)
+                        # code...
+                        break;
+                    case 4:// All Members (All City)
+                        $memberIDs = Family::groupBy('id')->pluck('id')->toArray();
+                        break;
+                    case 5:// Adult (Dholka)
+                        # code...
+                        break;
+                    case 6:// Adult (All)
+                        # code...
+                        break;
+                }
+
+                if (count($memberIDs) > 0) {
+                    foreach ($memberIDs as $memberID) {
+                        debitTransaction($memberID, $debitAmount, $mainTransactionID, $note);
+                    }
+
+                }
+            } else {
+                return false;
+            }
+
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+}
+
+if (!function_exists('debitTransaction')) {
+    /**
+     * Debit Amount for Members.
+     *
+     * @param  $message    message you want to show in notification
+     * @param  $userId     To Whom You Want To send Notification
+     *
+     * @return object
+     */
+    function debitTransaction($memberID, $debitAmount, $mainTransactionID, $note = null)
+    {
+        $transaction = new Transaction();
+
+        $transaction->insert([
+            'member_id'        => $memberID,
+            'main_trans_id'    => $mainTransactionID,
+            'trans_type'       => 2,
+            'note'             => $note,
+            'amount'           => $debitAmount,
+            'transaction_date' => Carbon::now(),
+            'created_at'       => Carbon::now(),
+            'created_by'       => access()->user()->id,
+        ]);
+
+        updatePendingAmount($memberID, $debitAmount, 'debited');
+
+        return true;
+    }
+}
+
+if (!function_exists('creditTransaction')) {
+    /**
+     * credit Amount for Members.
+     *
+     * @param  $message    message you want to show in notification
+     * @param  $userId     To Whom You Want To send Notification
+     *
+     * @return object
+     */
+    function creditTransaction($memberID, $creditAmount, $mainTransactionID = null, $note = null, $receiptNo = null)
+    {
+        $transaction = new Transaction();
+
+        $transaction->insert([
+            'member_id'        => $memberID,
+            'main_trans_id'    => $mainTransactionID,
+            'trans_type'       => 1,
+            'note'             => $note,
+            'receipt_no'       => $receiptNo,
+            'amount'           => $creditAmount,
+            'transaction_date' => Carbon::now(),
+            'created_at'       => Carbon::now(),
+            'created_by'       => access()->user()->id,
+        ]);
+
+        updatePendingAmount($memberID, $creditAmount, 'credited');
+
+        return true;
+    }
+}
+
+if (!function_exists('updatePendingAmount')) {
+    /**
+     * updatePendingAmount function
+     *
+     * @param [Member ID] $memberID
+     * @param [Amount] $debitAmount
+     * @param [Debited OR Credited] $currentAmtType
+     * @return void
+     */
+    function updatePendingAmount($memberID, $amount, $currentAmtType)
+    {
+        $currentPendingAmount = PendingAmount::where('member_id', $memberID)->value('pending_amount');
+
+        if (is_null($currentPendingAmount)) {
+            if ($currentAmtType == 'debited') {
+                $newPendingAmount = (floatval($amount)+floatval(0.00));
+            } else if ($currentAmtType == 'credited') {
+                $newPendingAmount = (floatval(0.00)-floatval($amount));
+            }
+
+            $newPendingAmount = number_format((float)$newPendingAmount, 2, '.', '');
+
+            $transaction = new PendingAmount();
+
+            return $transaction->insert([
+                'member_id'      => $memberID,
+                'pending_amount' => $newPendingAmount,
+            ]);
+        } else {
+            if ($currentAmtType == 'debited') {
+                $newPendingAmount = (floatval($amount)+floatval($currentPendingAmount));
+            } else if ($currentAmtType == 'credited') {
+                $newPendingAmount = (floatval($currentPendingAmount)-floatval($amount));
+            }
+
+            $newPendingAmount = number_format((float)$newPendingAmount, 2, '.', '');
+
+            PendingAmount::where('member_id', $memberID)->update(array('pending_amount' => $newPendingAmount));
+
+            return true;
+        }
+    }
+}
+
+if (!function_exists('getTransHistoryUsingMemberID')) {
+    /**
+     * credit Amount for Members.
+     *
+     * @param  $message    message you want to show in notification
+     * @param  $userId     To Whom You Want To send Notification
+     *
+     * @return object
+     */
+    function getTransHistoryUsingMemberID($memberID)
+    {
+        $query = Transaction::leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.transtable").'.created_by')
+            ->leftjoin(config('smj.tables.maintranstable'), config('smj.tables.maintranstable').'.id', '=', config("smj.tables.transtable").'.main_trans_id')
+            ->leftjoin(config('smj.tables.eventssubcategory'), config('smj.tables.eventssubcategory').'.id', '=', config("smj.tables.maintranstable").'.sub_category_id')
+            ->leftjoin(config('smj.tables.eventsgroup'), config('smj.tables.eventsgroup').'.id', '=', config("smj.tables.eventssubcategory").'.event_group_id')
+            ->leftjoin(config('smj.tables.family'), config('smj.tables.family').'.id', '=', config("smj.tables.transtable").'.member_id')
+            ->where(config('smj.tables.transtable').'.member_id', $memberID)
+            ->select([
+                DB::raw('CONCAT('.config("smj.tables.family").'.firstname, " ", '.config("smj.tables.family").'.lastname, " ", '.config("smj.tables.family").'.surname) AS member_name'),
+                DB::raw('CONCAT('.config("smj.tables.family").'.area, " / ", '.config("smj.tables.family").'.city) AS areacity'),
+                DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
+                config('smj.tables.transtable').'.id',
+                config('smj.tables.eventssubcategory').'.sub_category_name',
+                config('smj.tables.eventsgroup').'.event_group_name',
+                config('smj.tables.transtable').'.note',
+                config('smj.tables.transtable').'.trans_type',
+                config('smj.tables.transtable').'.member_id',
+                config('smj.tables.transtable').'.receipt_no',
+                config('smj.tables.transtable').'.amount',
+                config('smj.tables.transtable').'.created_at',
+        ]);
+
+        return $query->get()->toArray();
+    }
+}
+
+if (!function_exists('encryptMethod')) {
+    function encryptMethod($string, $key=1958) {
+        $result = '';
+        for($i=0, $k= strlen($string); $i<$k; $i++) {
+            $char = substr($string, $i, 1);
+            $keychar = substr($key, ($i % strlen($key))-1, 1);
+            $char = chr(ord($char)+ord($keychar));
+            $result .= $char;
+        }
+        return base64_encode($result);
+    }
+}
+
+if (!function_exists('decryptMethod')) {
+    function decryptMethod($string, $key=1958) {
+        $result = '';
+        $string = base64_decode($string);
+        for($i=0,$k=strlen($string); $i< $k ; $i++) {
+            $char = substr($string, $i, 1);
+            $keychar = substr($key, ($i % strlen($key))-1, 1);
+            $char = chr(ord($char)-ord($keychar));
+            $result.=$char;
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('transactionExist')) {
+    /**
+     * credit Amount for Members.
+     *
+     * @param  $message    message you want to show in notification
+     * @param  $userId     To Whom You Want To send Notification
+     *
+     * @return object
+     */
+    function transactionExist($memberID)
+    {
+        $query = Transaction::where('member_id', $memberID)->select('*')->count();
+
+        return $query;
     }
 }
