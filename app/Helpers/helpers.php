@@ -657,9 +657,13 @@ if (!function_exists('creditTransaction')) {
      *
      * @return object
      */
-    function creditTransaction($memberID, $creditAmount, $mainTransactionID = null, $note = null, $receiptNo = null)
+    function creditTransaction($memberID, $creditAmount, $mainTransactionID = null, $note = null, $receiptNo = null, $transactionDate = null)
     {
         $transaction = new Transaction();
+
+        if (is_null($transactionDate)) {
+            $transactionDate = Carbon::now();
+        }
 
         $transaction->insert([
             'member_id'        => $memberID,
@@ -668,7 +672,7 @@ if (!function_exists('creditTransaction')) {
             'note'             => $note,
             'receipt_no'       => $receiptNo,
             'amount'           => $creditAmount,
-            'transaction_date' => Carbon::now(),
+            'transaction_date' => $transactionDate,
             'created_at'       => Carbon::now(),
             'created_by'       => access()->user()->id,
         ]);
@@ -753,6 +757,7 @@ if (!function_exists('getTransHistoryUsingMemberID')) {
                 config('smj.tables.transtable').'.receipt_no',
                 config('smj.tables.transtable').'.amount',
                 config('smj.tables.transtable').'.created_at',
+                config('smj.tables.transtable').'.transaction_date',
         ]);
 
         return $query->get()->toArray();

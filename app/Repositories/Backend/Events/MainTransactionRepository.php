@@ -335,7 +335,9 @@ class MainTransactionRepository extends BaseRepository
     {
         $memberID = decryptMethod($input['member_id']);
 
-        creditTransaction($memberID, $input['amount'], null, $input['note'], $input['receipt_no']);
+        $transactionDate = $input['date_']['year'].'-'.$input['date_']['month'].'-'.$input['date_']['day'];
+
+        creditTransaction($memberID, $input['amount'], null, $input['note'], $input['receipt_no'], $transactionDate);
 
         return true;
     }

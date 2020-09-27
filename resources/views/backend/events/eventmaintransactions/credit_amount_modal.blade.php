@@ -46,7 +46,20 @@
                                 {{ Form::label('Notes', trans('labels.backend.events-subcategory.validation.notes'), ['class' => 'control-label required']) }}
                                 {{ Form::textarea('note', null,['class' => 'form-control', 'rows' => '2', 'cols' => '5', 'placeholder' => trans('labels.backend.events-subcategory.validation.notes'), 'required' => 'required']) }}
                             </div>
-                            <div class="col-sm-6" style="padding: 35px 0 0 16px;text-align: left;">
+                            {{-- New Member DOB --}}
+                            <div class="col-sm-6">
+                                {{ Form::label('transaction_date', trans('labels.backend.family.validation.transaction_date'), ['class' => 'control-label']) }}
+
+                                <div class="dateclass">
+                                    <div class="date-block">
+                                        <div class="input-group input-group-custom border-none">
+                                            <input class="form-control eremitdatepicker" name="transaction_date" id="transaction_date" placeholder="DOB (dd-mm-yyyy)" value="{{ date('d-m-Y') }}" type="text">
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!--form control-->
+                            <div class="col-sm-12" style="padding: 35px 0 0 16px;text-align: left;">
                                 {{ Form::submit(trans('labels.backend.events-subcategory.buttons.submit'), ['class' => 'btn btn-success btn-md']) }}
                             </div>
                         {{ Form::close() }}
@@ -77,7 +90,7 @@
                                     <td>{{ $transaction['note'] }}</td>
                                     <td>{{ $transaction['receipt_no'] }}</td>
                                     <td>{{ $transaction['creatorName'] }}</td>
-                                    <td>{{ date("d/m/Y h:i A", strtotime($transaction['created_at'])) }}</td>
+                                    <td>{{ date("d/m/Y h:i A", strtotime($transaction['transaction_date'])) }}</td>
                                     @if ($transaction['trans_type'] == '1')
                                         <td style="background-color:#89cf89;">&#x20B9; {{ $transaction['amount'] }}</td>
                                     @elseif ($transaction['trans_type'] == '2')
@@ -98,6 +111,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        SMJ.Utility.Datepicker.init();
         $('#dtBasicExample').DataTable( {
             "order": [[ 4, "asc" ]],
             responsive: true,

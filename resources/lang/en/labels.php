@@ -196,6 +196,7 @@ return [
                 'education' => 'શિક્ષણ',
                 'occupation' => 'વ્યવસાય',
                 'date_of_death' => 'Date of Expired',
+                'transaction_date' => 'Cash collected on',
             ],
             'validationedit' => [
                 'surname' => 'અટક',
