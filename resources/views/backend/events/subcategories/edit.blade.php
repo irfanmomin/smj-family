@@ -26,7 +26,7 @@
                 <div class="form-group">
                     {{ Form::label('category_id', trans('labels.backend.events-subcategory.validation.category_id'), ['class' => 'col-lg-2 control-label required']) }}
                     <div class="col-lg-10">
-                        {!! Form::select('category_id', $mainEventCategoriesList, (isset($subcategory->category_id) ? $subcategory->category_id : '' ), ["class" => "form-control box-size", "placeholder" => trans('labels.backend.events-subcategory.validation.category_idholder'), 'required' => 'required']) !!}
+                        {!! Form::select('category_id', $mainEventCategoriesList, (isset($subcategory->category_id) ? $subcategory->category_id : '' ), ["class" => "form-control box-size", "placeholder" => trans('labels.backend.events-subcategory.validation.category_id'), 'required' => 'required']) !!}
                     </div><!--col-lg-10-->
                 </div><!--form control-->
                 {{-- Event Group --}}
