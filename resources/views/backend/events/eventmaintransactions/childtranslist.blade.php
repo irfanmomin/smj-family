@@ -101,5 +101,35 @@
             });
         });
 
+        $(document).on('click','.dlt-debited-trans', function(e) {
+            console.log('fdsfdds');
+            e.preventDefault();
+
+            var result = confirm("Are you sure you want to delete?");
+            if (!result) {
+                return;
+            }
+
+            if ($(this).data('id') != undefined && $(this).data('id') != '') {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route("admin.childtranslist.deletetrans") }}',
+                    data: { id: $(this).data('id') }
+                }).done(function( response ) {
+                    var response = JSON.parse(response);
+                    console.log('response', response);
+                    // Log a message to the console
+                    if (response.message != '') {
+                        $('#childtranslist-table').DataTable().destroy();
+                        setTimeout(() => {
+                            alert(response.message);
+                        }, 500);
+                        $(".select-all").prop("checked", false);
+                        generateDataTable({formData: ['<?php echo $id ?>']});
+                    }
+                });
+            }
+        });
+
     </script>
 @endsection

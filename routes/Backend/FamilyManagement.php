@@ -66,7 +66,8 @@ Route::group(['namespace' => 'Events', 'middleware' => ['admin', 'activeuser']],
     Route::post('maintransactions/childtranslist/get', 'ChildTransactionListTableController')->name('childtranslist.get');
 
     // Delete Full Family Route
-    Route::any('childtranslist/delete/{id}', 'MainTransactionController@deleteChildTransaction')->name('childtranslist.deletetrans');
+    Route::any('childtranslist/delete', 'MainTransactionController@deleteChildTransaction')->name('childtranslist.deletetrans');
+    Route::any('childtranslist/deletecredited', 'MainTransactionController@deleteChildCreditedTransaction')->name('childtranslist.deletecreditedtrans');
 
     Route::any('childtranslist/creditpayment', 'MainTransactionController@creditPayment')->name('childtransactions.creditamount');
 });

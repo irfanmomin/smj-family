@@ -193,7 +193,8 @@ class MainTransactionController extends Controller
         return view('backend.events.eventmaintransactions.childtranslist')->with('id', $id);
     }
 
-    public function deleteChildTransaction($id, ManageMainTransactionRequest $request) {
+    public function deleteChildTransaction(ManageMainTransactionRequest $request) {
+        $id = decryptMethod($request->get('id'));
         $trans = Transaction::where('id', $id);
         $transDetails = $trans->get()->toArray();
 
@@ -205,10 +206,29 @@ class MainTransactionController extends Controller
 
         if ($trans->delete()) {
             updatePendingAmount($memberID, $amount, 'credited');
-            return redirect()->back()->withInput()->withFlashSuccess('Transaction deleted successfully!');
+            return json_encode(array("message" => trans('alerts.backend.transaction.deleted')));
         }
 
-        return redirect()->back()->withInput()->withFlashWarning('Transaction could not be deleted.');
+        return json_encode(array("message" => trans('alerts.backend.transaction.notdeleted')));
+    }
+
+    public function deleteChildCreditedTransaction(ManageMainTransactionRequest $request) {
+        $id = decryptMethod($request->get('id'));
+        $trans = Transaction::where('id', $id);
+        $transDetails = $trans->get()->toArray();
+
+        \Log::info('Deleted Trans start');
+        \Log::info($transDetails);
+        $memberID = $transDetails[0]['member_id'];
+        $amount = $transDetails[0]['amount'];
+        \Log::info('Deleted Trans end');
+
+        if ($trans->delete()) {
+            updatePendingAmount($memberID, $amount, 'debited');
+            return json_encode(array("message" => trans('alerts.backend.transaction.deleted')));
+        }
+
+        return json_encode(array("message" => trans('alerts.backend.transaction.notdeleted')));
     }
 
     /**

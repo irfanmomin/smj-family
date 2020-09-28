@@ -35,7 +35,9 @@ return [
             'deleted' => 'Main Tranasction Deleted Successfully'
         ],
         'transaction' => [
-            'credited' => 'Amount Successfully Credited.'
+            'credited'   => 'Amount Successfully Credited.',
+            'deleted'    => 'Transaction deleted Successfully.',
+            'notdeleted' => 'Transaction could not be delete.',
         ],
         'roles' => [
             'created' => 'The role was successfully created.',

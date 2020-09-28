@@ -81,6 +81,8 @@
                                 </th>
                                 <th class="th-sm">Amount
                                 </th>
+                                <th class="th-sm">Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,8 +95,15 @@
                                     <td>{{ date("d/m/Y h:i A", strtotime($transaction['transaction_date'])) }}</td>
                                     @if ($transaction['trans_type'] == '1')
                                         <td style="background-color:#89cf89;">&#x20B9; {{ $transaction['amount'] }}</td>
+                                        <td><a href="javascript:void(0)" class="btn btn-flat btn-danger" id="dlt-credited-trans" data-id="<?php echo encryptMethod($transaction['id']) ?>">
+                                            <i data-toggle="tooltip" data-placement="top" title="Delete" class="fa fa-trash"></i>
+                                    </a></td>
                                     @elseif ($transaction['trans_type'] == '2')
                                         <td style="background-color:#ff9292;">&#x20B9; {{ $transaction['amount'] }}</td>
+                                        <td><?php /* <a href="javascript:void(0);" data-id="<?php echo encryptMethod($transaction['id']) ?>"
+                                        class="btn btn-flat btn-danger" id="dlt-debited-trans">
+                                            <i data-toggle="tooltip" data-placement="top" title="Delete" class="fa fa-trash"></i>
+                                    </a> */ ?></td>
                                     @endif
                                 </tr>
                             @endforeach
@@ -167,15 +176,85 @@
                         textStatus, errorThrown
                     );
                 });
-
-                /* $('#advance_search').addClass('btn label-success');
-                $('#export-buttons').removeClass('hide');
-                $('.transparent-bg input').val('');
-                $('#advance_search_remove').addClass('remove-advance_search');
-                $('.preset-filter-dp').addClass('btn-primary');
-                $('.preset-filter-dp').removeClass('btn-warning');
-                $('#filterId').text('Filter'); */
             }, 100);
+        });
+
+        $('#dlt-debited-trans').on('click', function(e) {
+            e.preventDefault();
+
+            var result = confirm("Are you sure you want to delete?");
+            if (!result) {
+                return;
+            }
+
+            if ($(this).data('id') != undefined && $(this).data('id') != '') {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route("admin.childtranslist.deletetrans") }}',
+                    data: { id: $(this).data('id') }
+                }).done(function( response ) {
+                    var response = JSON.parse(response);
+                    console.log('response', response);
+                    // Log a message to the console
+                    if (response.message != '') {
+                        var id = '<?php echo $data['transaction_history_array'][0]['member_id'] ?>';
+
+                        //$( 'btn-mem-'+id ).trigger( "click" );
+                        $('.alert.alert-success').removeAttr('style');
+                        $('.alert.alert-success').html(response.message);
+                        $('.alert.alert-success').show();
+                        setTimeout(function() {
+                            $('.alert.alert-success').fadeOut();
+                        }, 3000);
+
+                        var target = '<?php echo route('admin.family.addpaymentmodal', $data['transaction_history_array'][0]['member_id']) ?>';
+
+                        // load the url and show modal on success
+                        jQuery("#convertedInfoModal .modal-content").load(target, function() {
+                            jQuery("#convertedInfoModal").modal("show");
+                        });
+                    }
+                });
+            }
+        });
+
+        $('#dlt-credited-trans').on('click', function(e) {
+            e.preventDefault();
+
+            var result = confirm("Are you sure you want to delete?");
+            if (!result) {
+                return;
+            }
+
+            if ($(this).data('id') != undefined && $(this).data('id') != '') {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route("admin.childtranslist.deletecreditedtrans") }}',
+                    data: { id: $(this).data('id') }
+                }).done(function( result ) {
+                    var response = JSON.parse(result);
+                    console.log('response', response);
+                    // Log a message to the console
+                    if (response.message != '') {
+                        var id = '<?php echo $data['transaction_history_array'][0]['member_id'] ?>';
+
+                        //$( 'btn-mem-'+id ).trigger( "click" );
+                        $('.alert.alert-success').removeAttr('style');
+                        $('.alert.alert-success').html(response.message);
+                        $('.alert.alert-success').show();
+                        setTimeout(function() {
+                            $('.alert.alert-success').fadeOut();
+                        }, 3000);
+
+                        var target = '<?php echo route('admin.family.addpaymentmodal', $data['transaction_history_array'][0]['member_id']) ?>';
+
+                        // load the url and show modal on success
+                        jQuery("#convertedInfoModal .modal-content").load(target, function() {
+                            jQuery("#convertedInfoModal").modal("show");
+                        });
+                    }
+                });
+            }
         });
     });
 </script>

@@ -40,13 +40,10 @@ class ChildTransactionListTableController extends Controller
             })
             ->rawColumns(['action_unreserve'])  /*  Define action buttons in storage spaces Datatable listing */
             ->editColumn('action_unreserve', function ($maintrans) {
-                return '<a href="'.route('admin.childtranslist.deletetrans', $maintrans->id).'"
-                class="btn btn-flat btn-danger" data-method="delete"
-                data-trans-button-cancel="'.trans('buttons.general.cancel').'"
-                data-trans-button-confirm="'.trans('buttons.general.crud.delete').'"
-                data-trans-title="'.trans('strings.backend.general.are_you_sure').'">
-                    <i data-toggle="tooltip" data-placement="top" title="Delete" class="fa fa-trash"></i>
-            </a>';
+                return '<a href="javascript:void(0);" data-id="'.encryptMethod($maintrans->id).'"
+                    class="btn btn-flat btn-danger dlt-debited-trans">
+                        <i data-toggle="tooltip" data-placement="top" title="Delete" class="fa fa-trash"></i>
+                </a>';
             })
             /* ->addColumn('actions', function ($maintrans) {
                 return $maintrans->action_buttons;
