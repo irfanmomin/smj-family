@@ -807,3 +807,20 @@ if (!function_exists('transactionExist')) {
         return $query;
     }
 }
+
+if (!function_exists('getPendingAmountLabels')) {
+
+    /**
+     * @return bool
+     */
+    function getPendingAmountLabels($type = 0)
+    {
+        $statusArr = array(
+            1 => 'All',
+            2 => 'Pending Payment',
+            3 => 'Full Payment',
+        );
+
+        return isset($statusArr[$type]) ? $statusArr[$type] : $statusArr;
+    }
+}

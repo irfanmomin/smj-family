@@ -5,6 +5,7 @@
 <div class="modal-body">
     <div class="row">
         <div class="alert alert-success" style="display:none;"></div>
+        <div class="alert alert-danger" style="display:none;"></div>
 	    <div class="col-sm-12">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#home">Add Payment</a></li>
@@ -31,12 +32,16 @@
                         </table>
                     </div>
                     <div class="col-sm-12">
-                        {{ Form::open(['route' => 'admin.childtransactions.creditamount', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post', 'id' => 'credit-amount']) }}
+                        {{ Form::open(['route' => 'admin.childtranslist.creditamount', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post', 'id' => 'credit-amount']) }}
                             <input type="hidden" name="member_id" value="<?php echo encryptMethod($data['transaction_history_array'][0]['member_id']); ?>">
                             {{-- amount --}}
                             <div class="col-sm-6">
                                 {{ Form::label('amount', trans('labels.backend.eventmaintrans.validation.creditamount'), ['class' => 'control-label required']) }}
                                 {{ Form::text('amount', null, ['class' => 'form-control box-size', 'pattern' => '^\$?[0-9]?((\.[0-9]+)|([0-9]+(\.[0-9]+)?))$', 'title' => 'Please enter proper Amount', 'placeholder' => trans('labels.backend.eventmaintrans.validation.creditamount'), 'required' => 'required']) }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ Form::label('main_trans_id', trans('labels.backend.eventmaintrans.validation.main_trans_id'), ['class' => 'control-label required']) }}
+                                {!! Form::select('main_trans_id', $data['events_list'], null, ["class" => "form-control box-size", "data-column" => 2, "placeholder" => trans('labels.backend.eventmaintrans.validation.main_trans_id'), 'required' => 'required']) !!}
                             </div>
                             <div class="col-sm-6">
                                 {{ Form::label('receipt_no', trans('labels.backend.events-subcategory.validation.receipt_no'), ['class' => 'control-label']) }}
@@ -92,10 +97,10 @@
                                     <td>{{ $transaction['note'] }}</td>
                                     <td>{{ $transaction['receipt_no'] }}</td>
                                     <td>{{ $transaction['creatorName'] }}</td>
-                                    <td>{{ date("d/m/Y h:i A", strtotime($transaction['transaction_date'])) }}</td>
+                                    <td>{{ date("d/m/Y h:i A", strtotime($transaction['created_at'])) }}</td>
                                     @if ($transaction['trans_type'] == '1')
                                         <td style="background-color:#89cf89;">&#x20B9; {{ $transaction['amount'] }}</td>
-                                        <td><a href="javascript:void(0)" class="btn btn-flat btn-danger" id="dlt-credited-trans" data-id="<?php echo encryptMethod($transaction['id']) ?>">
+                                        <td><a href="javascript:void(0)" class="btn btn-flat btn-danger dlt-credited-trans" id="dlt-credited-trans" data-id="<?php echo encryptMethod($transaction['id']) ?>">
                                             <i data-toggle="tooltip" data-placement="top" title="Delete" class="fa fa-trash"></i>
                                     </a></td>
                                     @elseif ($transaction['trans_type'] == '2')
@@ -113,9 +118,6 @@
             </div>
         </div>
     </div>
-</div>
-<div class="modal-footer">
-	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 </div>
 
 <script type="text/javascript">
@@ -139,7 +141,7 @@
 
                 // Fire off the request to /form.php
                 request = $.ajax({
-                    url: '{{ route("admin.childtransactions.creditamount") }}',
+                    url: '{{ route("admin.childtranslist.creditamount") }}',
                     type: "post",
                     data: formData
                 });
@@ -147,8 +149,9 @@
                 // Callback handler that will be called on success
                 request.done(function (response, textStatus, jqXHR){
                     var response = JSON.parse(response);
+                    console.log(response.hasOwnProperty('error') && response.error != '');
                     // Log a message to the console
-                    if (response.message != '') {
+                    if (response.hasOwnProperty('message') && response.message != '') {
                         var id = '<?php echo $data['transaction_history_array'][0]['member_id'] ?>';
 
                         //$( 'btn-mem-'+id ).trigger( "click" );
@@ -165,6 +168,16 @@
                         jQuery("#convertedInfoModal .modal-content").load(target, function() {
                             jQuery("#convertedInfoModal").modal("show");
                         });
+                    } else if (response.hasOwnProperty('error') && response.error != '') {
+                        var id = '<?php echo $data['transaction_history_array'][0]['member_id'] ?>';
+
+                        //$( 'btn-mem-'+id ).trigger( "click" );
+                        $('.alert.alert-danger').removeAttr('style');
+                        $('.alert.alert-danger').html(response.error);
+                        $('.alert.alert-danger').show();
+                        setTimeout(function() {
+                            $('.alert.alert-danger').fadeOut();
+                        }, 4000);
                     }
                 });
 
@@ -218,7 +231,7 @@
             }
         });
 
-        $('#dlt-credited-trans').on('click', function(e) {
+        $('.dlt-credited-trans').on('click', function(e) {
             e.preventDefault();
 
             var result = confirm("Are you sure you want to delete?");

@@ -8,6 +8,7 @@ use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use DB;
 use App\Models\Events\Transaction;
+use App\Models\Events\MainTransaction;
 use App\Models\Events\PendingAmount;
 use Illuminate\Support\Facades\Storage;
 
@@ -372,9 +373,12 @@ class FamilyRepository extends BaseRepository
         if (!is_null($memberDetails)) {
             $transHistoryArray = getTransHistoryUsingMemberID($memberID);
             $memberPendingAmount = PendingAmount::where('member_id', $memberID)->value('pending_amount');
+            $eventsList = MainTransaction::leftjoin(config('smj.tables.eventssubcategory'), config('smj.tables.eventssubcategory').'.id', '=', config("smj.tables.maintranstable").'.sub_category_id')
+            ->pluck(config('smj.tables.eventssubcategory').'.sub_category_name', config('smj.tables.maintranstable').'.id')->toArray();
 
             $finalArray['transaction_history_array'] = $transHistoryArray;
             $finalArray['total_pending_amount']      = $memberPendingAmount;
+            $finalArray['events_list']               = $eventsList;
         }
 
         return $finalArray;

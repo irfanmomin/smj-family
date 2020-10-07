@@ -148,7 +148,16 @@ class MainTransactionController extends Controller
 
         if ($categoryID != '') {
             // Sub Category List
-            $subCategoryList = getsubCategoryList($categoryID);
+            $subCategoryListFull = getsubCategoryList($categoryID);
+
+            $existingSubCategories = MainTransaction::where('category_id', $categoryID)->pluck('sub_category_id')->toArray();
+            $subCategoryList = [];
+
+            foreach ($subCategoryListFull as $subCategory) {
+                if (!in_array($subCategory['id'], $existingSubCategories)) {
+                    $subCategoryList[] = $subCategory;
+                }
+            }
 
             if (count($subCategoryList) > 0) {
                 foreach ($subCategoryList as $subCategoryDetails) {
@@ -174,23 +183,23 @@ class MainTransactionController extends Controller
      */
     public function showChildTrans($id = 0, ManageMainTransactionRequest $request)
     {
-        /* $query =  Transaction::leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.transtable").'.created_by')
-            ->leftjoin(config('smj.tables.maintranstable'), config('smj.tables.maintranstable').'.id', '=', config("smj.tables.transtable").'.main_trans_id')
-            ->leftjoin(config('smj.tables.eventssubcategory'), config('smj.tables.eventssubcategory').'.id', '=', config("smj.tables.maintranstable").'.sub_category_id')
-            ->leftjoin(config('smj.tables.eventsgroup'), config('smj.tables.eventsgroup').'.id', '=', config("smj.tables.eventssubcategory").'.event_group_id')
-            ->where(config('smj.tables.transtable').'.main_trans_id', $id)
-            ->select([
-                DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
-                config('smj.tables.transtable').'.id',
-                config('smj.tables.eventssubcategory').'.sub_category_name',
-                config('smj.tables.eventsgroup').'.event_group_name',
-                config('smj.tables.maintranstable').'.amount',
-                config('smj.tables.maintranstable').'.created_at',
-            ]);
+        if ($id > 0) {
 
-        $allChildTrans = $query->get()->toArray(); */
+            $query =  Transaction::leftjoin(config('smj.tables.maintranstable'), config('smj.tables.maintranstable').'.id', '=', config("smj.tables.transtable").'.main_trans_id')
+                ->leftjoin(config('smj.tables.eventssubcategory'), config('smj.tables.eventssubcategory').'.id', '=', config("smj.tables.maintranstable").'.sub_category_id')
+                ->where(config('smj.tables.transtable').'.main_trans_id', $id)
+                ->select([
+                    config('smj.tables.eventssubcategory').'.sub_category_name',
+                    config('smj.tables.maintranstable').'.amount',
+                ]);
 
-        return view('backend.events.eventmaintransactions.childtranslist')->with('id', $id);
+            $mainTransDetails = $query->first()->toArray();
+
+            return view('backend.events.eventmaintransactions.childtranslist')->with('id', $id)->with('mainTransDetails', $mainTransDetails);
+        }
+
+        return new RedirectResponse(route('admin.maintransactions.index'), ['flash_danger' => 'Child Transactions not found for this Category']);
+
     }
 
     public function deleteChildTransaction(ManageMainTransactionRequest $request) {
@@ -241,22 +250,32 @@ class MainTransactionController extends Controller
         $input = $request->except('_token');
 
         $validatedData = $request->validate([
-            'amount'    => ['required','regex: /^\$?[0-9]?((\.[0-9]+)|([0-9]+(\.[0-9]+)?))$/'],
-            'note'      => 'required',
-            'member_id' => 'required',
+            'amount'        => ['required','regex: /^\$?[0-9]?((\.[0-9]+)|([0-9]+(\.[0-9]+)?))$/'],
+            'note'          => 'required',
+            'member_id'     => 'required',
+            'main_trans_id' => 'required',
         ]);
 
         $memberID = decryptMethod($input['member_id']);
 
         if (!is_numeric($memberID)) {
-            return redirect()->back()->withInput()->withFlashWarning('Invalid Member ID.');
+            //return redirect()->back()->withInput()->withFlashWarning('');
+            return json_encode(array("error" => 'Invalid Member ID.'));
+        }
+
+        $existingCreditedRecord = Transaction::where('main_trans_id', $input['main_trans_id'])->where('member_id', $memberID)->where('trans_type', '1')->sum('amount');
+        $existingDebitedRecord  = Transaction::where('main_trans_id', $input['main_trans_id'])->where('member_id', $memberID)->where('trans_type', '2')->sum('amount');
+
+        if ( $existingDebitedRecord <= $existingCreditedRecord ) {
+            return json_encode(array("error" => trans('alerts.backend.transaction.alreadycredited')));
         }
 
         $maintransaction = $this->maintransaction->creditPayment($input);
 
         if ($maintransaction == false) {
-            session()->flash('flash_danger', trans('alerts.backend.family.wrong'));
-            return redirect()->back();
+            return json_encode(array("error" => trans('alerts.backend.family.wrong')));
+            // session()->flash('flash_danger', trans('alerts.backend.family.wrong'));
+            // return redirect()->back();
         }
 
         return json_encode(array("message" => trans('alerts.backend.transaction.credited')));

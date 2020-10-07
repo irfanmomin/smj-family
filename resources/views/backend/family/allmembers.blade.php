@@ -19,6 +19,9 @@
             <div class="modal fade" id="convertedInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default cancel-btn-update" data-dismiss="modal">Exit</button>
+                    </div>
                 </div>
             </div>
             <div class="table-responsive data-table-wrapper">
@@ -235,6 +238,13 @@
                     type: 'post',
                     data: param
                 },
+                bStateSave: true,
+                fnStateSave: function (oSettings, oData) {
+                    localStorage.setItem( 'DataTables_'+window.location.pathname, JSON.stringify(oData) );
+                },
+                fnStateLoad: function (oSettings) {
+                    return JSON.parse( localStorage.getItem('DataTables_'+window.location.pathname) );
+                },
                 columns: [
                     {data: 'fullname', name: 'fullname'},
                     {data: 'firstname', name: 'firstname', sortable: true},
@@ -353,6 +363,10 @@
                 $form.find('input[type=submit]').click();
             }); */
 
+            $(document).on('click','.cancel-btn-update', function(e) {
+                generateDataTable({formData: []});
+            });
+
             jQuery(document).on("click", ".btn-credit-payment-modal", function(ev){
                 ev.preventDefault();
                 var target = jQuery(this).attr("href");
@@ -363,7 +377,7 @@
                 });
             });
             jQuery(".modal").on("hidden.bs.modal", function(){
-            jQuery("#convertedInfoModal .modal-content").html("");
+                jQuery("#convertedInfoModal .modal-content").html("");
             });
         });
 

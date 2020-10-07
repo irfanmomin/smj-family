@@ -90,6 +90,8 @@ return [
                 'created_at'        => 'Created At',
                 'transaction_date'  => 'Transaction Date',
                 'event_group_name'  => 'Event Group',
+                'pending_amount'    => 'Pending Amount',
+                'areacity'          => 'Area / City',
             ],
             'buttons' => [
                 'create' => 'Create'
@@ -116,6 +118,7 @@ return [
                 'amount_ph'            => 'Debit Amount',
                 'event_group'            => 'Event Group',
                 'creditamount'            => 'Credit Amount',
+                'main_trans_id'            => 'Choose Event',
             ],
             'table' => [
                 'category_name'     => 'Category Name',

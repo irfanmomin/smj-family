@@ -38,6 +38,7 @@ return [
             'credited'   => 'Amount Successfully Credited.',
             'deleted'    => 'Transaction deleted Successfully.',
             'notdeleted' => 'Transaction could not be delete.',
+            'alreadycredited' => 'Payment already credited for this Event.',
         ],
         'roles' => [
             'created' => 'The role was successfully created.',

@@ -112,20 +112,30 @@ class MainTransactionRepository extends BaseRepository
         $id = $formData[0];
         $query =  Transaction::leftjoin(config('access.users_table'), config('access.users_table').'.id', '=', config("smj.tables.transtable").'.created_by')
         ->leftjoin(config('smj.tables.maintranstable'), config('smj.tables.maintranstable').'.id', '=', config("smj.tables.transtable").'.main_trans_id')
+        ->leftjoin(config('smj.tables.pendingamount'), config('smj.tables.pendingamount').'.member_id', '=', config("smj.tables.transtable").'.member_id')
         ->leftjoin(config('smj.tables.eventssubcategory'), config('smj.tables.eventssubcategory').'.id', '=', config("smj.tables.maintranstable").'.sub_category_id')
         ->leftjoin(config('smj.tables.eventsgroup'), config('smj.tables.eventsgroup').'.id', '=', config("smj.tables.eventssubcategory").'.event_group_id')
         ->leftjoin(config('smj.tables.family'), config('smj.tables.family').'.id', '=', config("smj.tables.transtable").'.member_id')
         ->where(config('smj.tables.transtable').'.main_trans_id', $id)
+        ->where(config('smj.tables.transtable').'.trans_type', 2)
         ->select([
+            DB::raw('(SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=1 AND t.main_trans_id=smj_transactions.main_trans_id) AS creditedTotalAmount'),
+            DB::raw('(SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=2 AND t.main_trans_id=smj_transactions.main_trans_id) AS debitedTotalAmount'),
+            DB::raw('((SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=2 AND t.main_trans_id=smj_transactions.main_trans_id) - (SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=1 AND t.main_trans_id=smj_transactions.main_trans_id)) as trans_pending_amount'),
             DB::raw('CONCAT('.config("smj.tables.family").'.firstname, " ", '.config("smj.tables.family").'.lastname, " ", '.config("smj.tables.family").'.surname) AS member_name'),
+            DB::raw('CONCAT('.config("smj.tables.family").'.area, " / ", '.config("smj.tables.family").'.city) AS areacity'),
             DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
             config('smj.tables.transtable').'.id',
+            config('smj.tables.transtable').'.member_id',
+            config('smj.tables.transtable').'.trans_type',
+            config('smj.tables.pendingamount').'.pending_amount',
+            config('smj.tables.transtable').'.main_trans_id',
             config('smj.tables.eventssubcategory').'.sub_category_name',
             config('smj.tables.eventsgroup').'.event_group_name',
             config('smj.tables.maintranstable').'.amount',
             config('smj.tables.maintranstable').'.created_at',
-        ]);
-
+        ])->groupBy(config('smj.tables.transtable').'.member_id');
+           // dd($query->toSql());
         // If any Custom filter is applid
         if (! is_null($formData) && count($formData) > 2) {
             $arrRequest = [];
@@ -337,7 +347,7 @@ class MainTransactionRepository extends BaseRepository
 
         $transactionDate = $input['date_']['year'].'-'.$input['date_']['month'].'-'.$input['date_']['day'];
 
-        creditTransaction($memberID, $input['amount'], null, $input['note'], $input['receipt_no'], $transactionDate);
+        creditTransaction($memberID, $input['amount'], $input['main_trans_id'], $input['note'], $input['receipt_no'], $transactionDate);
 
         return true;
     }
