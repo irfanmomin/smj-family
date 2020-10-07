@@ -21,6 +21,7 @@ var SMJ = {
 
             // Expired Member Page JS
             $(document).on('click', '.next-btn', function() {
+                console.log('clicked next button');
                 $('.loading').show();
                 $('#newmainmember').val($('#choose_main_member_selectbox option:selected').val());
                 $('#choose_main_member_selectbox').addClass('field_disabled').attr('readonly', 'readonly');

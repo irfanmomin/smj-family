@@ -182,6 +182,9 @@ class FamilyRepository extends BaseRepository
         $family = self::MODEL;
         $family = new $family();
 
+        $relationValue = isset($input['relation']) ? $input['relation']  : 'Self';
+        $familyIDValue   = isset($input['family_id']) ? $input['family_id']: NULL;
+
         $family->dob = $input['dob'];
         $family->area = $input['area'];
         $family->city = $input['city'];
@@ -190,9 +193,9 @@ class FamilyRepository extends BaseRepository
         $family->surname = $input['surname'];
         $family->lastname = $input['lastname'];
         $family->firstname = $input['firstname'];
-        $family->relation = isset($input['relation']) ? $input['relation'] : 'Self';
+        $family->relation = $relationValue;
         $family->is_main = isset($input['is_main']) ? $input['is_main'] : '1';
-        $family->family_id = isset($input['family_id']) ? $input['family_id'] : NULL;
+        $family->family_id = $familyIDValue;
         $family->aadhar_id = isset($input['aadhar_id']) ? $input['aadhar_id'] : NULL;
         $family->election_id = isset($input['election_id']) ? $input['election_id'] : NULL;
         $family->education = isset($input['education']) ? $input['education'] : NULL;
@@ -200,6 +203,18 @@ class FamilyRepository extends BaseRepository
         $family->created_by = access()->user()->id;
         $family->created_at = Carbon::now();
         $family->updated_at = NULL;
+
+        if ($relationValue == 'Self' && $familyIDValue == NULL) {
+            $maxID = Family::max('main_family_id');
+            $family->main_family_id = ($maxID+1);
+        } else {
+            $mainFAMILYID = Family::where('id', $familyIDValue)->value('main_family_id');
+            if ($mainFAMILYID > 0 && is_numeric($mainFAMILYID)) {
+                $family->main_family_id = $mainFAMILYID;
+            } else {
+                return false;
+            }
+        }
 
         if ($family->save()) {
             return $family;

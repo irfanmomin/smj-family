@@ -463,8 +463,8 @@ class FamilyController extends Controller
 
                 // Save and set expired member as deleted
                 if ($newMainMember->save()) {
-                    $expireMainMember->family_id = $input['newmainmember'];
-                    $expireMainMember->save();
+                    /* $expireMainMember->family_id = $input['newmainmember'];
+                    $expireMainMember->save(); */
                     Family::destroy([$input['expiredmember']]);
                 } else {
                     return redirect()->back()->withInput()->withFlashWarning('Something went Wrong! Couldn\'t save new member.');
