@@ -92,6 +92,7 @@ return [
                 'event_group_name'  => 'Event Group',
                 'pending_amount'    => 'Pending Amount',
                 'areacity'          => 'Area / City',
+                'main_family_id'    => 'Family ID',
             ],
             'buttons' => [
                 'create' => 'Create'
@@ -149,6 +150,7 @@ return [
             'verifiedstatus'         => 'Verified Status',
             'gender'         => 'Gender',
             'close'         => 'Close',
+            'main_family_id'    => 'Family ID',
         ],
         'family' => [
             'management' => 'All Family View',
@@ -172,6 +174,7 @@ return [
                 'areacity' => 'Area / City',
                 'is_verified' => 'Status',
                 'pending_amount' => 'Pending Amount',
+                'main_family_id'    => 'Family ID',
             ],
             'validation' => [
                 'surname' => 'અટક',

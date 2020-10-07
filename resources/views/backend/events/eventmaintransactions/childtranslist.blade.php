@@ -33,17 +33,20 @@ $title = $mainTransDetails['sub_category_name']. ' (₹ '.$mainTransDetails['amo
                 <table id="childtranslist-table" class="table table-condensed table-hover table-bordered responsive">
                     <thead>
                         <tr>
+                            <th>{{ trans('labels.backend.childtranslist.table.main_family_id') }}</th>
                             <th>{{ trans('labels.backend.childtranslist.table.member_name') }}</th>
                             <th>{{ trans('labels.backend.childtranslist.table.areacity') }}</th>
+                            <th>{{ trans('labels.backend.childtranslist.table.pending_amount') }}</th>
                             <th>{{ trans('labels.backend.childtranslist.table.pending_amount') }}</th>
                             <th>{{ trans('labels.general.actions') }}</th>
                         </tr>
                     </thead>
                     <thead class="transparent-bg">
                         <tr>
-                            <th>{!! Form::text('member_name', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.childtranslist.table.member_name')]) !!}</th>
-                            <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 1, "placeholder" => trans('labels.backend.childtranslist.table.areacity')]) !!}</th>
-                            <th>{!! Form::select('pending_amount', getPendingAmountLabels(), null, ["class" => "search-input-select form-control", "data-column" => 2]) !!}</th>
+                            <th>{!! Form::text('main_family_id', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.childtranslist.table.main_family_id')]) !!}</th>
+                            <th>{!! Form::text('member_name', null, ["class" => "search-input-text form-control", "data-column" => 1, "placeholder" => trans('labels.backend.childtranslist.table.member_name')]) !!}</th>
+                            <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.childtranslist.table.areacity')]) !!}</th>
+                            <th>{!! Form::select('pending_amount_hidden', getPendingAmountLabels(), null, ["class" => "search-input-select form-control", "data-column" => 3]) !!}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -71,24 +74,32 @@ $title = $mainTransDetails['sub_category_name']. ' (₹ '.$mainTransDetails['amo
                     type: 'post',
                     data: param
                 },
-                bStateSave: true,
+                /* bStateSave: true,
                 fnStateSave: function (oSettings, oData) {
                     localStorage.setItem( 'DataTables_'+window.location.pathname, JSON.stringify(oData) );
                 },
                 fnStateLoad: function (oSettings) {
                     return JSON.parse( localStorage.getItem('DataTables_'+window.location.pathname) );
-                },
+                } , */
                 columns: [
+                    {data: 'main_family_id', name: '{{config('smj.tables.family')}}.main_family_id'},
                     {data: 'member_name', name: 'member_name'},
                     {data: 'areacity', name: 'areacity'},
-                    {data: 'pending_amount', name: 'pending_amount'},
+                    {data: 'pending_amount_hidden', name: 'pending_amount_hidden'},
+                    {data: 'pending_amount', name: 'trans_pending_amount'},
                     {data: 'action_unreserve', name: 'action_unreserve', searchable: false, sortable: false},
                 ],
-                order: [[1, "asc"]],
+                order: [[2, "asc"]],
                 lengthMenu: [[25, 100, -1], [25, 100, "All"]],
                 searchDelay: 500,
                 columnDefs: [
-                    { width: 280, targets: 0 },
+                    { width: 50, targets: 0 },
+                    { 'orderData':[4], 'targets': [3] },
+                    {
+                        'targets': [4],
+                        'visible': false,
+                        'searchable': false
+                    },
                 ],
                 fixedColumns: true,
                 dom: 'lBfrtip',

@@ -21,7 +21,7 @@
                              @endphp
                         @endif
                         <div class="">
-                            <h4>{{ $mainMemberArray['firstname'].' '.$mainMemberArray['lastname'].' '.$mainMemberArray['surname'] . ' ('. $totalChild.')' }}</h4><span style="float: right; top: -28px;" class="glyphicon glyphicon-plus"></span>
+                            <h4>{{$mainMemberArray['main_family_id']}}: {{ $mainMemberArray['firstname'].' '.$mainMemberArray['lastname'].' '.$mainMemberArray['surname'] . ' ('. $totalChild.')' }}</h4><span style="float: right; top: -28px;" class="glyphicon glyphicon-plus"></span>
                         </div>
                     </div>
                     <div class="panel-body collapse" style="overflow-x: scroll;" id="body">

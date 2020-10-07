@@ -34,7 +34,10 @@ class AllMembersTableController extends Controller
             ->filterColumn('fullname', function($query, $keyword) {
                 $query->whereRaw("firstname like ?", ["%$keyword%"])->orWhereRaw("lastname like ?", ["%$keyword%"])->orWhereRaw("surname like ?", ["%$keyword%"]);
             })
-            ->filterColumn('pending_amount', function($query, $keyword) {
+            /* ->filterColumn('pending_amount', function($query, $keyword) {
+                $query->whereRaw("smj_members_pending_amount.pending_amount like ?", ["%$keyword%"]);
+            }) */
+            ->filterColumn('pending_amount_hidden', function($query, $keyword) {
                 $query->whereRaw("smj_members_pending_amount.pending_amount like ?", ["%$keyword%"]);
             })
             ->filterColumn('areacity', function($query, $keyword) {
@@ -42,6 +45,11 @@ class AllMembersTableController extends Controller
             })
             ->addColumn('fullname', function ($family) {
                 return $family->fullname;
+            })
+            ->addColumn('pending_amount_hidden', function ($family) {
+                if (!is_null($family->pending_amount)) {
+                    return '<h4><span class="label label-warning">&#x20B9; '.$family->pending_amount.'</span></h4>';
+                }
             })
             ->filterColumn('creatorName', function($query, $keyword) {
                 $query->whereRaw("CONCAT(users.first_name, ' ', users.last_name) like ?", ["%{$keyword}%"]);
@@ -58,11 +66,9 @@ class AllMembersTableController extends Controller
                     return '-';
                 }
             })
-            ->addColumn('pending_amount', function ($family) {
-                if (!is_null($family->pending_amount)) {
-                    return '<h4><span class="label label-warning">&#x20B9; '.$family->pending_amount.'</span></h4>';
-                }
-            })
+           /*  ->addColumn('pending_amount', function ($family) {
+                return $family->pending_amount;
+            }) */
             ->addColumn('is_verified', function ($family) {
                 if ($family->is_verified == 1) {
                     return '';

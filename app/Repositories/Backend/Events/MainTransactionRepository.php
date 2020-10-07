@@ -127,6 +127,7 @@ class MainTransactionRepository extends BaseRepository
             DB::raw('CONCAT(users.first_name, " ", users.last_name) AS creatorName'),
             config('smj.tables.transtable').'.id',
             config('smj.tables.transtable').'.member_id',
+            config('smj.tables.family').'.main_family_id',
             config('smj.tables.transtable').'.trans_type',
             config('smj.tables.pendingamount').'.pending_amount',
             config('smj.tables.transtable').'.main_trans_id',

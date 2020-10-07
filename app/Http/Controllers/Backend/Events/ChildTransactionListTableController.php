@@ -38,7 +38,15 @@ class ChildTransactionListTableController extends Controller
             ->filterColumn('member_name', function($query, $keyword) {
                 $query->whereRaw("members.firstname like ?", ["%$keyword%"])->orWhereRaw("members.lastname like ?", ["%$keyword%"])->orWhereRaw("members.surname like ?", ["%$keyword%"]);
             })
-            ->filterColumn('pending_amount', function($query, $keyword) {
+            /* ->filterColumn('pending_amount', function($query, $keyword) {
+                if ($keyword == "1") {
+                } else if ($keyword == "2") {
+                    $query->whereRaw("((SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=2 AND t.main_trans_id=smj_transactions.main_trans_id) - (SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=1 AND t.main_trans_id=smj_transactions.main_trans_id)) > 0 ");
+                } else if ($keyword == "3") {
+                    $query->whereRaw("((SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=2 AND t.main_trans_id=smj_transactions.main_trans_id) - (SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=1 AND t.main_trans_id=smj_transactions.main_trans_id)) <= 0 ");
+                }
+            }) */
+            ->filterColumn('pending_amount_hidden', function($query, $keyword) {
                 if ($keyword == "1") {
                 } else if ($keyword == "2") {
                     $query->whereRaw("((SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=2 AND t.main_trans_id=smj_transactions.main_trans_id) - (SELECT COALESCE(SUM(t.amount),0) FROM smj_transactions t WHERE t.member_id=smj_transactions.member_id AND t.trans_type=1 AND t.main_trans_id=smj_transactions.main_trans_id)) > 0 ");
@@ -56,14 +64,17 @@ class ChildTransactionListTableController extends Controller
                 </a>    <a class="btn btn-success btn-flat btn-credit-payment-modal btn-mem-'.$maintrans->member_id.'" href="'.route('admin.family.addpaymentmodal', $maintrans->member_id).'" data-toggle="modal" data-target="#convertedInfoModal"><i data-toggle="tooltip" data-placement="top" title="Add Payment" class="fa fa-money"></i></a>';
             })
             ->rawColumns(['action_unreserve'])  /*  Define action buttons in storage spaces Datatable listing */
-            ->addColumn('pending_amount', function ($family) {
-                /* $creditedTotalAmount = Transaction::where('member_id', $family->member_id)->where('trans_type', '1')->where('main_trans_id', $family->main_trans_id)->sum('amount');
+            /* ->addColumn('pending_amount', function ($family) {
+                // $creditedTotalAmount = Transaction::where('member_id', $family->member_id)->where('trans_type', '1')->where('main_trans_id', $family->main_trans_id)->sum('amount');
 
-                $debitedTotalAmount = Transaction::where('member_id', $family->member_id)->where('trans_type', '2')->where('main_trans_id', $family->main_trans_id)->sum('amount');
+                // $debitedTotalAmount = Transaction::where('member_id', $family->member_id)->where('trans_type', '2')->where('main_trans_id', $family->main_trans_id)->sum('amount');
 
-                $newPendingAmount = (floatval($debitedTotalAmount)-floatval($creditedTotalAmount));
-                $newPendingAmount = number_format((float)$newPendingAmount, 2, '.', ''); */
+                // $newPendingAmount = (floatval($debitedTotalAmount)-floatval($creditedTotalAmount));
+                // $newPendingAmount = number_format((float)$newPendingAmount, 2, '.', '');
 
+                return '<h4><span class="label label-warning">&#x20B9; '.($family->trans_pending_amount).'</span></h4>';
+            }) */
+            ->addColumn('pending_amount_hidden', function ($family) {
                 return '<h4><span class="label label-warning">&#x20B9; '.($family->trans_pending_amount).'</span></h4>';
             })
             ->make(true);

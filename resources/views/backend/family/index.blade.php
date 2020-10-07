@@ -21,6 +21,7 @@
                 <table id="family-table" class="table table-condensed table-hover table-bordered responsive">
                     <thead>
                         <tr>
+                            <th>{{ trans('labels.backend.family.table.main_family_id') }}</th>
                             <th>{{ trans('labels.backend.family.table.fullname') }}</th>
                             <th>{{ trans('labels.backend.family.table.firstname') }}</th>
                             <th>{{ trans('labels.backend.family.table.areacity') }}</th>
@@ -31,9 +32,10 @@
                     </thead>
                     <thead class="transparent-bg">
                         <tr>
-                            <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
-                            <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 2, "placeholder" => trans('labels.backend.family.table.areacity')]) !!}</th>
-                            <th>{!! Form::text('is_verified', null, ["class" => "search-input-text form-control", "data-column" => 4, "placeholder" => trans('labels.backend.family.table.is_verified')]) !!}</th>
+                            <th>{!! Form::text('main_family_id', null, ["class" => "search-input-text form-control", "data-column" => 0, "placeholder" => trans('labels.backend.family.table.main_family_id')]) !!}</th>
+                            <th>{!! Form::text('fullname', null, ["class" => "search-input-text form-control", "data-column" => 1, "placeholder" => trans('labels.backend.family.table.fullname')]) !!}</th>
+                            <th>{!! Form::text('areacity', null, ["class" => "search-input-text form-control", "data-column" => 3, "placeholder" => trans('labels.backend.family.table.areacity')]) !!}</th>
+                            <th>{!! Form::text('is_verified', null, ["class" => "search-input-text form-control", "data-column" => 5, "placeholder" => trans('labels.backend.family.table.is_verified')]) !!}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -53,7 +55,8 @@
                 processing: true,
                 serverSide: true,
                 responsive: true,
-                pageLength: 10,
+                pageLength: 25,
+                lengthMenu: [[25, 100, -1], [25, 100, "All"]],
                 'destroy': true,
                 'autoWidth': false,
                 ajax: {
@@ -61,7 +64,15 @@
                     type: 'post',
                     data: param
                 },
+                /* bStateSave: true,
+                fnStateSave: function (oSettings, oData) {
+                    localStorage.setItem( 'DataTables_'+window.location.pathname, JSON.stringify(oData) );
+                },
+                fnStateLoad: function (oSettings) {
+                    return JSON.parse( localStorage.getItem('DataTables_'+window.location.pathname) );
+                }, */
                 columns: [
+                    {data: 'main_family_id', name: 'main_family_id'},
                     {data: 'fullname', name: 'fullname'},
                     {data: 'firstname', name: 'firstname', sortable: true},
                     {data: 'areacity', name: 'areacity'},
@@ -69,19 +80,19 @@
                     {data: 'is_verified', name: '{{config('smj.tables.family')}}.is_verified'},
                     {data: 'actions', name: 'actions', searchable: false, sortable: false},
                 ],
-                order: [[1, "asc"]],
+                order: [[2, "asc"]],
                 searchDelay: 500,
                 columnDefs: [
-                    { width: 280, targets: 0 },
-                    { 'orderData':[1], 'targets': [0] },
+                    { width: 50, targets: 0 },
+                    { 'orderData':[2], 'targets': [1] },
                     {
-                        'targets': [1],
+                        'targets': [2],
                         'visible': false,
                         'searchable': false
                     },
-                    { 'orderData':[3], 'targets': [2] },
+                    { 'orderData':[4], 'targets': [3] },
                     {
-                        'targets': [3],
+                        'targets': [4],
                         'visible': false,
                         'searchable': false
                     },
@@ -90,11 +101,11 @@
                 dom: 'lBfrtip',
                 buttons: {
                     buttons: [
-                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 0, 2]  }},
-                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 0, 2 ]  }},
-                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 0, 2 ]  }},
-                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 0, 2 ]  }},
-                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 0, 2 ]  }}
+                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 0, 1, 3]  }},
+                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 0, 1, 3 ]  }},
+                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 0, 1, 3 ]  }},
+                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 0, 1, 3 ]  }},
+                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 0, 1, 3 ]  }}
                     ]
                 }
             });
