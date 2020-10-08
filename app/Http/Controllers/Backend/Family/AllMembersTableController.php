@@ -40,6 +40,14 @@ class AllMembersTableController extends Controller
             ->filterColumn('pending_amount_hidden', function($query, $keyword) {
                 $query->whereRaw("smj_members_pending_amount.pending_amount like ?", ["%$keyword%"]);
             })
+            ->filterColumn('main_family_id', function($query, $keyword) {
+                if (strpos($keyword, ',') !== false) {
+                    $newkeyword = explode(",", $keyword);
+                    $query->whereIn("members.main_family_id", $newkeyword);
+                } else {
+                    $query->whereRaw("members.main_family_id like ?", ["$keyword"]);
+                }
+            })
             ->filterColumn('areacity', function($query, $keyword) {
                 $query->whereRaw("area like ?", ["%$keyword%"])->orWhereRaw("city like ?", ["%$keyword%"]);
             })

@@ -37,6 +37,14 @@ class FamilyTableController extends Controller
             ->filterColumn('areacity', function($query, $keyword) {
                 $query->whereRaw("area like ?", ["%$keyword%"])->orWhereRaw("city like ?", ["%$keyword%"]);
             })
+            ->filterColumn('main_family_id', function($query, $keyword) {
+                if (strpos($keyword, ',') !== false) {
+                    $newkeyword = explode(",", $keyword);
+                    $query->whereIn("members.main_family_id", $newkeyword);
+                } else {
+                    $query->whereRaw("members.main_family_id like ?", ["$keyword"]);
+                }
+            })
             ->addColumn('fullname', function ($family) {
                 $childIDs = getChildMemberIDs($family->id);
                 $totalMembers = 1;

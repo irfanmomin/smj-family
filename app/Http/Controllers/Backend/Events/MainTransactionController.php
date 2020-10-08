@@ -82,8 +82,7 @@ class MainTransactionController extends Controller
             return redirect()->back();
         }
 
-        return new RedirectResponse(route('admin.maintransactions.index'), ['flash_success' => trans('alerts.backend.events.inserted')]);
-
+        return new RedirectResponse(route('admin.maintransactions.showchildtranslist', ['id' => $maintransaction]), ['flash_success' => trans('alerts.backend.events.inserted')]);
     }
 
     /**

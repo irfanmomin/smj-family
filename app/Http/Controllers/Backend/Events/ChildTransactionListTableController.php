@@ -38,6 +38,14 @@ class ChildTransactionListTableController extends Controller
             ->filterColumn('member_name', function($query, $keyword) {
                 $query->whereRaw("members.firstname like ?", ["%$keyword%"])->orWhereRaw("members.lastname like ?", ["%$keyword%"])->orWhereRaw("members.surname like ?", ["%$keyword%"]);
             })
+            ->filterColumn('main_family_id', function($query, $keyword) {
+                if (strpos($keyword, ',') !== false) {
+                    $newkeyword = explode(",", $keyword);
+                    $query->whereIn("members.main_family_id", $newkeyword);
+                } else {
+                    $query->whereRaw("members.main_family_id like ?", ["$keyword"]);
+                }
+            })
             /* ->filterColumn('pending_amount', function($query, $keyword) {
                 if ($keyword == "1") {
                 } else if ($keyword == "2") {

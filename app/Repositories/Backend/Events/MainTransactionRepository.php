@@ -196,7 +196,7 @@ class MainTransactionRepository extends BaseRepository
                 $incrID,
                 $subCategoryName);
 
-            return $maintransaction;
+            return $incrID;
         }
 
         return false;

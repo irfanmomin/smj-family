@@ -25,7 +25,7 @@ trait MainTransactionAttributes
     {
         if (access()->allow($permission)) {
             return '<a href="'.route($route, $this->id).'" class="btn btn-flat btn-default">
-                    <i data-toggle="tooltip" data-placement="top" title="Edit Category" class="fa fa-eye"></i>
+                    <i data-toggle="tooltip" data-placement="top" title="View Transactions" class="fa fa-eye"></i>
                 </a>';
         }
     }

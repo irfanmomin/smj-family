@@ -82,7 +82,7 @@ $title = $mainTransDetails['sub_category_name']. ' (₹ '.$mainTransDetails['amo
                     return JSON.parse( localStorage.getItem('DataTables_'+window.location.pathname) );
                 } , */
                 columns: [
-                    {data: 'main_family_id', name: '{{config('smj.tables.family')}}.main_family_id'},
+                    {data: 'main_family_id', name: 'main_family_id'},
                     {data: 'member_name', name: 'member_name'},
                     {data: 'areacity', name: 'areacity'},
                     {data: 'pending_amount_hidden', name: 'pending_amount_hidden'},
