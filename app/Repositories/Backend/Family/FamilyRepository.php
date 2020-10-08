@@ -208,7 +208,8 @@ class FamilyRepository extends BaseRepository
         $family->updated_at = NULL;
 
         if ($relationValue == 'Self' && $familyIDValue == NULL) {
-            $maxID = Family::max('main_family_id');
+            $maxID = Family::withTrashed()->max('main_family_id');
+
             $family->main_family_id = ($maxID+1);
         } else {
             $mainFAMILYID = Family::where('id', $familyIDValue)->value('main_family_id');
