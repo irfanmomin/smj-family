@@ -83,7 +83,7 @@ class ChildTransactionListTableController extends Controller
                 return '<h4><span class="label label-warning">&#x20B9; '.($family->trans_pending_amount).'</span></h4>';
             }) */
             ->addColumn('pending_amount_hidden', function ($family) {
-                return '<h4><span class="label label-warning">&#x20B9; '.($family->trans_pending_amount).'</span></h4>';
+                return '<h4><span class="label label-warning">&#x20B9; '.(number_format((float)$family->trans_pending_amount, 2, '.', '')).'</span></h4>';
             })
             ->make(true);
     }

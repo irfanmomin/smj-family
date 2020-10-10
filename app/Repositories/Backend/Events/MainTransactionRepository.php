@@ -284,13 +284,20 @@ class MainTransactionRepository extends BaseRepository
             $mainTransCatID    = $maintransaction->category_id;
             $mainTransSubCatID = $maintransaction->sub_category_id;
 
-            $membersArr = Transaction::where('main_trans_id', $mainTransID)->pluck('member_id')->toArray();
+            $membersArr = Transaction::where('main_trans_id', $mainTransID)->where('trans_type', '2')->get()->toArray();
+            $membersCreditedArr = Transaction::where('main_trans_id', $mainTransID)->where('trans_type', '1')->get()->toArray();
 
             if ($maintransaction->delete()) {
                 if (count($membersArr) > 0) {
                     Transaction::where('main_trans_id', $mainTransID)->delete();
-                    foreach ($membersArr as $memberID) {
-                        updatePendingAmount($memberID, $mainTransAmt, 'credited');
+                    foreach ($membersArr as $memberDetails) {
+                        updatePendingAmount($memberDetails['member_id'], $memberDetails['amount'], 'credited');
+                    }
+                }
+
+                if (count($membersCreditedArr) > 0) {
+                    foreach ($membersCreditedArr as $creditedMembers) {
+                        updatePendingAmount($creditedMembers['member_id'], $creditedMembers['amount'], 'debited');
                     }
                 }
 

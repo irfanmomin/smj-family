@@ -35,10 +35,12 @@ return [
             'deleted' => 'Main Tranasction Deleted Successfully'
         ],
         'transaction' => [
-            'credited'   => 'Amount Successfully Credited.',
-            'deleted'    => 'Transaction deleted Successfully.',
-            'notdeleted' => 'Transaction could not be delete.',
+            'credited'        => 'Amount Successfully Credited.',
+            'deleted'         => 'Transaction deleted Successfully.',
+            'notdeleted'      => 'Transaction could not be delete.',
             'alreadycredited' => 'Payment already credited for this Event.',
+            'validamount'     => 'Please enter exact amount.',
+            'notdebitedforthis'     => 'This member is not added in this Event.',
         ],
         'roles' => [
             'created' => 'The role was successfully created.',

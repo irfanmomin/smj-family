@@ -254,7 +254,7 @@
                     {data: 'pending_amount', name: '{{config('smj.tables.pendingamount')}}.pending_amount'},
                     {data: 'actions', name: 'actions', searchable: false, sortable: false},
                 ],
-                order: [[3, "asc"]],
+                order: [[0, "asc"]],
                 searchDelay: 500,
                 columnDefs: [
                     { width: 50, targets: 0 },
@@ -281,11 +281,11 @@
                 dom: 'lBfrtip',
                 buttons: {
                     buttons: [
-                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 1, 3, 7]  }},
-                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 1, 3, 7 ]  }},
-                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 1, 3, 8 ]  }},
-                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 1, 3, 7 ]  }},
-                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 1, 3, 7 ]  }}
+                        { extend: 'copy', className: 'copyButton',  exportOptions: {columns: [ 0, 1, 3, 7]  }},
+                        { extend: 'csv', className: 'csvButton',  exportOptions: {columns: [ 0, 1, 3, 8 ]  }},
+                        { extend: 'excel', className: 'excelButton',  exportOptions: {columns: [ 0, 1, 3, 8 ]  }},
+                        { extend: 'pdf', className: 'pdfButton',  exportOptions: {columns: [ 0, 1, 3, 7 ]  }},
+                        { extend: 'print', className: 'printButton',  exportOptions: {columns: [ 0, 1, 3, 7 ]  }}
                     ]
                 }
             });

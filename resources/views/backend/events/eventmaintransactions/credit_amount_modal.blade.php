@@ -1,8 +1,11 @@
 <div class="modal-header" style="padding-bottom: 0;">
-	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
 	<h4>Add / View Transactions</h4>
 </div>
 <div class="modal-body">
+    <div class="loading" style="display:none;">
+        <div class="loader"></div>
+    </div>
     <div class="row">
         <div class="alert alert-success" style="display:none;"></div>
         <div class="alert alert-danger" style="display:none;"></div>
@@ -34,14 +37,15 @@
                     <div class="col-sm-12">
                         {{ Form::open(['route' => 'admin.childtranslist.creditamount', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post', 'id' => 'credit-amount']) }}
                             <input type="hidden" name="member_id" value="<?php echo encryptMethod($data['transaction_history_array'][0]['member_id']); ?>">
+                            {{-- Main Trans List --}}
+                            <div class="col-sm-6">
+                                <label for="main_trans_id" class="control-label required">{{ trans('labels.backend.eventmaintrans.validation.main_trans_id') }} <span id="main_trans_pending_amount"></span></label>
+                                {!! Form::select('main_trans_id', $data['events_list'], null, ["class" => "form-control box-size", "id" => "main_trans_id_selectbox", "data-id" => encryptMethod($data['transaction_history_array'][0]['member_id']), "data-column" => 2, "placeholder" => trans('labels.backend.eventmaintrans.validation.main_trans_id'), 'required' => 'required']) !!}
+                            </div>
                             {{-- amount --}}
                             <div class="col-sm-6">
                                 {{ Form::label('amount', trans('labels.backend.eventmaintrans.validation.creditamount'), ['class' => 'control-label required']) }}
                                 {{ Form::text('amount', null, ['class' => 'form-control box-size', 'pattern' => '^\$?[0-9]?((\.[0-9]+)|([0-9]+(\.[0-9]+)?))$', 'title' => 'Please enter proper Amount', 'placeholder' => trans('labels.backend.eventmaintrans.validation.creditamount'), 'required' => 'required']) }}
-                            </div>
-                            <div class="col-sm-6">
-                                {{ Form::label('main_trans_id', trans('labels.backend.eventmaintrans.validation.main_trans_id'), ['class' => 'control-label required']) }}
-                                {!! Form::select('main_trans_id', $data['events_list'], null, ["class" => "form-control box-size", "data-column" => 2, "placeholder" => trans('labels.backend.eventmaintrans.validation.main_trans_id'), 'required' => 'required']) !!}
                             </div>
                             <div class="col-sm-6">
                                 {{ Form::label('receipt_no', trans('labels.backend.events-subcategory.validation.receipt_no'), ['class' => 'control-label']) }}
@@ -122,6 +126,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        $('.loading').hide();
         SMJ.Utility.Datepicker.init();
         $('#dtBasicExample').DataTable( {
             "order": [[ 4, "asc" ]],
@@ -184,10 +189,15 @@
                 // Callback handler that will be called on failure
                 request.fail(function (jqXHR, textStatus, errorThrown){
                     // Log the error to the console
-                    console.error(
+                    console.log(
                         "The following error occurred: "+
-                        textStatus, errorThrown
-                    );
+                        textStatus);
+                        console.log(
+                        "The following error occurred: "+
+                        jqXHR);
+                        console.log(
+                        "The following error occurred: "+
+                        errorThrown);
                 });
             }, 100);
         });
@@ -226,6 +236,34 @@
                         jQuery("#convertedInfoModal .modal-content").load(target, function() {
                             jQuery("#convertedInfoModal").modal("show");
                         });
+                    }
+                });
+            }
+        });
+
+        $('#main_trans_id_selectbox').on('change', function(e) {
+            $('.loading').show();
+            var main_trans_id = $(this).val();
+
+            if ($(this).data('id') != undefined && $(this).data('id') != '') {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route("admin.childtranslist.getpendingamount") }}',
+                    data: { main_trans_id: main_trans_id, member_id: $(this).data('id') }
+                }).done(function( result ) {
+                    var response = JSON.parse(result);
+                    $('.loading').hide();
+                    if (response.hasOwnProperty('pending_amount') && response.pending_amount != '') {
+                        $('#main_trans_pending_amount').html('(Pending Amount: <strong style="color: #ff7514">&#x20B9; '+response.pending_amount+'</strong>)');
+                    } else if (response.hasOwnProperty('error') && response.error != '') {
+                        //$( 'btn-mem-'+id ).trigger( "click" );
+                        $('.alert.alert-danger').removeAttr('style');
+                        $('.alert.alert-danger').html(response.error);
+                        $('.alert.alert-danger').show();
+                        $('#main_trans_pending_amount').html('');
+                        setTimeout(function() {
+                            $('.alert.alert-danger').fadeOut();
+                        }, 4000);
                     }
                 });
             }

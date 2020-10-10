@@ -56,7 +56,7 @@ class AllMembersTableController extends Controller
             })
             ->addColumn('pending_amount_hidden', function ($family) {
                 if (!is_null($family->pending_amount)) {
-                    return '<h4><span class="label label-warning">&#x20B9; '.$family->pending_amount.'</span></h4>';
+                    return '<h4><span class="label label-warning">&#x20B9; '.number_format((float)$family->pending_amount, 2, '.', '').'</span></h4>';
                 }
             })
             ->filterColumn('creatorName', function($query, $keyword) {
@@ -74,8 +74,8 @@ class AllMembersTableController extends Controller
                     return '-';
                 }
             })
-           /*  ->addColumn('pending_amount', function ($family) {
-                return $family->pending_amount;
+            /* ->addColumn('pending_amount', function ($family) {
+                return number_format((float)$family->pending_amount, 2, '.', '');
             }) */
             ->addColumn('is_verified', function ($family) {
                 if ($family->is_verified == 1) {

@@ -82,7 +82,7 @@ class MainTransactionController extends Controller
             return redirect()->back();
         }
 
-        return new RedirectResponse(route('admin.maintransactions.showchildtranslist', ['id' => $maintransaction]), ['flash_success' => trans('alerts.backend.events.inserted')]);
+        return new RedirectResponse(route('admin.maintransactions.showchildtranslist', ['id' => $maintransaction]), ['flash_success' => trans('alerts.backend.eventmaintrans.inserted')]);
     }
 
     /**
@@ -131,7 +131,7 @@ class MainTransactionController extends Controller
     {
         $this->maintransaction->delete($maintransaction);
 
-        return new RedirectResponse(route('admin.maintransactions.index'), ['flash_success' => trans('alerts.backend.events.deleted')]);
+        return new RedirectResponse(route('admin.maintransactions.index'), ['flash_success' => trans('alerts.backend.eventmaintrans.deleted')]);
     }
 
     /**
@@ -192,12 +192,17 @@ class MainTransactionController extends Controller
                     config('smj.tables.maintranstable').'.amount',
                 ]);
 
-            $mainTransDetails = $query->first()->toArray();
+            $mainTransDetails = $query->first();
 
-            return view('backend.events.eventmaintransactions.childtranslist')->with('id', $id)->with('mainTransDetails', $mainTransDetails);
+            if ($mainTransDetails == null) {
+                return new RedirectResponse(route('admin.maintransactions.index'), ['flash_danger' => 'Child Transactions not found for this Main Transaction']);
+            }
+
+            //->toArray()
+            return view('backend.events.eventmaintransactions.childtranslist')->with('id', $id)->with('mainTransDetails', $mainTransDetails->toArray());
         }
 
-        return new RedirectResponse(route('admin.maintransactions.index'), ['flash_danger' => 'Child Transactions not found for this Category']);
+        return new RedirectResponse(route('admin.maintransactions.index'), ['flash_danger' => 'Child Transactions not found for this Main Transaction']);
 
     }
 
@@ -208,12 +213,29 @@ class MainTransactionController extends Controller
 
         \Log::info('Deleted Trans start');
         \Log::info($transDetails);
-        $memberID = $transDetails[0]['member_id'];
-        $amount = $transDetails[0]['amount'];
         \Log::info('Deleted Trans end');
+
+        $memberID    = $transDetails[0]['member_id'];
+        $amount      = $transDetails[0]['amount'];
+        $mainTransID = $transDetails[0]['main_trans_id'];
 
         if ($trans->delete()) {
             updatePendingAmount($memberID, $amount, 'credited');
+
+            $creditedTransList = Transaction::where('main_trans_id', $mainTransID)->where('member_id', $memberID)->where('trans_type', '1')->get()->toArray();
+
+            if (count($creditedTransList) > 0) {
+                foreach ($creditedTransList as $childTransDetails) {
+                    $creditedTransAmount = $childTransDetails['amount'];
+                    \Log::info('Deleted Credited Trans start');
+                    \Log::info($childTransDetails);
+                    \Log::info('Deleted Credited Trans end');
+                    Transaction::destroy($childTransDetails['id']);
+
+                    updatePendingAmount($memberID, $creditedTransAmount, 'debited');
+                }
+            }
+
             return json_encode(array("message" => trans('alerts.backend.transaction.deleted')));
         }
 
@@ -263,10 +285,17 @@ class MainTransactionController extends Controller
         }
 
         $existingCreditedRecord = Transaction::where('main_trans_id', $input['main_trans_id'])->where('member_id', $memberID)->where('trans_type', '1')->sum('amount');
+
         $existingDebitedRecord  = Transaction::where('main_trans_id', $input['main_trans_id'])->where('member_id', $memberID)->where('trans_type', '2')->sum('amount');
+
+        if ( $existingDebitedRecord <= 0 ) {
+            return json_encode(array("error" => trans('alerts.backend.transaction.notdebitedforthis')));
+        }
 
         if ( $existingDebitedRecord <= $existingCreditedRecord ) {
             return json_encode(array("error" => trans('alerts.backend.transaction.alreadycredited')));
+        } else if ($existingDebitedRecord < $input['amount']) {
+            return json_encode(array("error" => trans('alerts.backend.transaction.validamount')));
         }
 
         $maintransaction = $this->maintransaction->creditPayment($input);
@@ -278,6 +307,43 @@ class MainTransactionController extends Controller
         }
 
         return json_encode(array("message" => trans('alerts.backend.transaction.credited')));
+    }
 
+    /**
+     * getMemberTransIDPendingAmount $request
+     *
+     * @return \App\Http\Responses\RedirectResponse
+     */
+    public function getMemberTransIDPendingAmount(ManageMainTransactionRequest $request)
+    {
+        $input = $request->except('_token');
+
+        $validatedData = $request->validate([
+            'member_id'     => 'required',
+            'main_trans_id' => 'required',
+        ]);
+
+        $memberID = decryptMethod($input['member_id']);
+
+        if (!is_numeric($memberID)) {
+            return json_encode(array("error" => 'Invalid Member ID.'));
+        }
+
+        $existingCreditedRecord = Transaction::where('main_trans_id', $input['main_trans_id'])->where('member_id', $memberID)->where('trans_type', '1')->sum('amount');
+
+        $existingDebitedRecord  = Transaction::where('main_trans_id', $input['main_trans_id'])->where('member_id', $memberID)->where('trans_type', '2')->sum('amount');
+
+        $existingCreditedRecord = number_format((float)$existingCreditedRecord, 2, '.', '');
+        $existingDebitedRecord = number_format((float)$existingDebitedRecord, 2, '.', '');
+
+        if ( $existingDebitedRecord <= 0 ) {
+            return json_encode(array("error" => trans('alerts.backend.transaction.notdebitedforthis')));
+        }
+
+        $pendingAmount = $existingDebitedRecord - $existingCreditedRecord;
+
+        $pendingAmount = number_format((float)$pendingAmount, 2, '.', '');
+
+        return json_encode(array("pending_amount" => $pendingAmount));
     }
 }

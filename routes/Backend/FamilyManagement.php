@@ -71,6 +71,7 @@ Route::group(['namespace' => 'Events', 'middleware' => ['admin', 'activeuser']],
     Route::any('childtranslist/deletecredited', 'MainTransactionController@deleteChildCreditedTransaction')->name('childtranslist.deletecreditedtrans');
 
     Route::post('childtranslist/creditpayment', 'MainTransactionController@creditPayment')->name('childtranslist.creditamount');
+    Route::post('childtranslist/getpendingamount', 'MainTransactionController@getMemberTransIDPendingAmount')->name('childtranslist.getpendingamount');
 
     Route::get('childtranslist/newmember', 'MainTransactionController@newMember')->name('childtranslist.addnewmember');
 });

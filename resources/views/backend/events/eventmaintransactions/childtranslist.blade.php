@@ -89,7 +89,7 @@ $title = $mainTransDetails['sub_category_name']. ' (₹ '.$mainTransDetails['amo
                     {data: 'pending_amount', name: 'trans_pending_amount'},
                     {data: 'action_unreserve', name: 'action_unreserve', searchable: false, sortable: false},
                 ],
-                order: [[2, "asc"]],
+                order: [[0, "asc"]],
                 lengthMenu: [[25, 100, -1], [25, 100, "All"]],
                 searchDelay: 500,
                 columnDefs: [
@@ -105,11 +105,11 @@ $title = $mainTransDetails['sub_category_name']. ' (₹ '.$mainTransDetails['amo
                 dom: 'lBfrtip',
                 buttons: {
                     buttons: [
-                        { extend: 'copy', className: 'copyButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2]  }},
-                        { extend: 'csv', className: 'csvButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2 ]  }},
-                        { extend: 'excel', className: 'excelButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2 ]  }},
-                        { extend: 'pdf', className: 'pdfButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2 ]  }},
-                        { extend: 'print', className: 'printButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2 ]  }}
+                        { extend: 'copy', className: 'copyButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2, 3]  }},
+                        { extend: 'csv', className: 'csvButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2, 4 ]  }},
+                        { extend: 'excel', className: 'excelButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2, 4 ]  }},
+                        { extend: 'pdf', className: 'pdfButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2, 3 ]  }},
+                        { extend: 'print', className: 'printButton', title: '<?php echo $title; ?>',  exportOptions: {columns: [ 0, 1, 2, 3 ]  }}
                     ]
                 }
             });
