@@ -265,7 +265,13 @@
                             $('.alert.alert-danger').fadeOut();
                         }, 4000);
                     }
+                }).fail(function() {
+                    $('.loading').hide();
+                    $('#main_trans_pending_amount').html('');
                 });
+            } else {
+                $('.loading').hide();
+                $('#main_trans_pending_amount').html('');
             }
         });
 
